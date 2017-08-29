@@ -9,8 +9,8 @@ class Score {
 
     private static int ONE = 2;
     private static int TWO = 10;
-    private static int THREE = 20;
-    private static int FOUR = 30;
+    private static int THREE = 25;
+    private static int FOUR = 50;
 
     private static int directX[] = {0, 1, 1, 1};
     private static int directY[] = {1, 1, 0, -1};
