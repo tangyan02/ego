@@ -1,0 +1,4 @@
+rootProject.name = 'ego'
+include 'chiness-chess'
+include 'gomuku'
+
