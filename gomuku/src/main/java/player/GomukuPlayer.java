@@ -7,13 +7,13 @@ import entity.CountData;
 import enumeration.Color;
 import enumeration.Level;
 
-public class Player {
+public class GomukuPlayer {
 
     Game game;
 
     Config config = new Config();
 
-    public Player(Color[][] map, Level level) {
+    public GomukuPlayer(Color[][] map, Level level) {
         game = new Game();
         if (level == Level.EASY) {
             config.comboDeep = 0;

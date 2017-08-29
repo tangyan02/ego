@@ -5,11 +5,11 @@ import enumeration.Color;
 import enumeration.Level;
 import helper.MapDriver;
 import helper.WinChecker;
-import player.Player;
+import player.GomukuPlayer;
 
 public class Main {
 
-    private static Player player = null;
+    private static GomukuPlayer gomukuPlayer = null;
 
     private static Color[][] map = MapDriver.readMap();
 
@@ -38,8 +38,8 @@ public class Main {
         if (!debug) {
             listen();
         }
-        Player player = new Player(map, Level.HIGH);
-        result = player.play(aiColor).getPoint();
+        GomukuPlayer gomukuPlayer = new GomukuPlayer(map, Level.HIGH);
+        result = gomukuPlayer.play(aiColor).getPoint();
         System.out.println(result);
         map[result.getX()][result.getY()] = aiColor;
         if (updateFile) {
@@ -58,7 +58,7 @@ public class Main {
     private static void listen() {
         new Thread(() -> {
             while (true) {
-                CountData data = player.getCountData();
+                CountData data = gomukuPlayer.getCountData();
                 if (data.getAllStep() > 0 && progress == 0) {
                     progress = data.getAllStep();
                     for (int i = 0; i < progress; i++) {
