@@ -3,6 +3,7 @@ package core;
 import entity.Counter;
 import entity.Point;
 import enumeration.Color;
+import enumeration.ComboTye;
 import helper.ConsolePrinter;
 import helper.MapDriver;
 
@@ -33,11 +34,20 @@ public class ComboProcessor {
 
     Point canKill(Color targetColor) {
         result = null;
-        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score);
+        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.FOUR);
+        if (result != null)
+            return result;
+
+        dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(), config.comboDeep, score, ComboTye.FOUR);
+        if (result != null)
+            return null;
+
+        result = null;
+        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.THREE);
         return result;
     }
 
-    private boolean dfsKill(GameMap gameMap, Color color, Color targetColor, int level, Score score) {
+    private boolean dfsKill(GameMap gameMap, Color color, Color targetColor, int level, Score score, ComboTye comboTye) {
         //缓存
         Boolean cacheResult = cache.getComboResult();
         if (cacheResult != null) {
@@ -56,10 +66,10 @@ public class ComboProcessor {
                 counter.countCombo++;
                 return returnValue(true);
             }
-            List<Point> points = getComboAttackPoints(data);
+            List<Point> points = getComboAttackPoints(data, comboTye);
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score);
+                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye);
                 if (level == config.comboDeep && value) {
                     result = point;
                 }
@@ -74,14 +84,14 @@ public class ComboProcessor {
             if (data.getFiveAttack().size() > 0) {
                 return returnValue(false);
             }
-            List<Point> points = getComboDefencePoints(data);
+            List<Point> points = getComboDefencePoints(data, comboTye);
             //如果没有能防的则结束
             if (points.size() == 0) {
                 return returnValue(false);
             }
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score);
+                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye);
                 if (!value) {
                     setColor(point, Color.NULL, color, targetColor, score, gameMap);
                     return returnValue(false);
@@ -92,7 +102,7 @@ public class ComboProcessor {
         }
     }
 
-    private List<Point> getComboAttackPoints(Analyzer data) {
+    private List<Point> getComboAttackPoints(Analyzer data, ComboTye comboTye) {
         //如果有对方冲4，则防冲4
         if (!data.getFourDefence().isEmpty()) {
             return new ArrayList<>(data.getFourDefence());
@@ -103,26 +113,30 @@ public class ComboProcessor {
         }
         List<Point> result = new ArrayList<>();
         result.addAll(data.getFourAttack());
-        result.addAll(data.getThreeOpenAttack());
+        if (comboTye == ComboTye.THREE) {
+            result.addAll(data.getThreeOpenAttack());
+        }
         return result;
     }
 
-    private List<Point> getComboDefencePoints(Analyzer data) {
+    private List<Point> getComboDefencePoints(Analyzer data, ComboTye comboTye) {
         //如果有对方冲4，则防冲4
         if (!data.getFourDefence().isEmpty()) {
             return new ArrayList<>(data.getFourDefence());
         }
-        //如果有对方活3，则防活3或者冲四
-        if (!data.getThreeDefence().isEmpty()) {
-            return new ArrayList<Point>(data.getThreeDefence()) {{
-                addAll(data.getFourAttack());
-            }};
+        if (comboTye == ComboTye.THREE) {
+            //如果有对方活3，则防活3或者冲四
+            if (!data.getThreeDefence().isEmpty()) {
+                return new ArrayList<Point>(data.getThreeDefence()) {{
+                    addAll(data.getFourAttack());
+                }};
+            }
         }
         return new ArrayList<>();
     }
 
     private boolean returnValue(boolean value) {
-        cache.recordComboResult(value);
+//        cache.recordComboResult(value);
         return value;
     }
 
