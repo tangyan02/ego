@@ -84,30 +84,37 @@ class Score {
     }
 
     private int getValueByCount(int blackCount, int whiteCount, Color color) {
-        int value = 0;
+        float weight = 1.5f;
+        int valueWhite = 0;
         if (blackCount == 0) {
             if (whiteCount == 1)
-                value -= ONE;
+                valueWhite += ONE;
             if (whiteCount == 2)
-                value -= TWO;
+                valueWhite += TWO;
             if (whiteCount == 3)
-                value -= THREE;
+                valueWhite += THREE;
             if (whiteCount == 4)
-                value -= FOUR;
+                valueWhite += FOUR;
         }
 
+        int valueBlack = 0;
         if (whiteCount == 0) {
             if (blackCount == 1)
-                value += ONE;
+                valueBlack += ONE;
             if (blackCount == 2)
-                value += TWO;
+                valueBlack += TWO;
             if (blackCount == 3)
-                value += THREE;
+                valueBlack += THREE;
             if (blackCount == 4)
-                value += FOUR;
+                valueBlack += FOUR;
+        }
+
+        int value = 0;
+        if (color == Color.BLACK) {
+            return (int) (valueBlack * weight) - valueWhite;
         }
         if (color == Color.WHITE) {
-            value = -value;
+            return valueWhite - (int) (valueBlack * weight);
         }
         return value;
     }
