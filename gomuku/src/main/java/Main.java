@@ -23,9 +23,9 @@ public class Main {
 
     private static boolean autoRun = false;
 
-    private static boolean updateFile = false;
+    private static boolean updateFile = true;
 
-    private static Color aiColor = Color.WHITE;
+    private static Color aiColor = Color.BLACK;
 
     public static void main(String[] args) {
         System.out.println("正在初始化数据...");
@@ -38,7 +38,7 @@ public class Main {
         if (!debug) {
             listen();
         }
-        GomukuPlayer gomukuPlayer = new GomukuPlayer(map, Level.VERY_HIGH);
+        GomukuPlayer gomukuPlayer = new GomukuPlayer(map, Level.HIGH);
         result = gomukuPlayer.play(aiColor).getPoint();
         System.out.println(result);
         map[result.getX()][result.getY()] = aiColor;

@@ -34,15 +34,19 @@ public class ComboProcessor {
 
     Point canKill(Color targetColor) {
         result = null;
+        cache.clear();
         dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.FOUR);
         if (result != null)
             return result;
 
+        result = null;
+        cache.clear();
         dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(), config.comboDeep, score, ComboTye.FOUR);
         if (result != null)
             return null;
 
         result = null;
+        cache.clear();
         dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.THREE);
         return result;
     }
@@ -136,7 +140,7 @@ public class ComboProcessor {
     }
 
     private boolean returnValue(boolean value) {
-//        cache.recordComboResult(value);
+        cache.recordComboResult(value);
         return value;
     }
 
