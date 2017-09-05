@@ -7,11 +7,6 @@ import helper.MapDriver;
 
 class Score {
 
-    private static int ONE = 2;
-    private static int TWO = 10;
-    private static int THREE = 25;
-    private static int FOUR = 50;
-
     private static int directX[] = {0, 1, 1, 1};
     private static int directY[] = {1, 1, 0, -1};
 
@@ -84,7 +79,12 @@ class Score {
     }
 
     private int getValueByCount(int blackCount, int whiteCount, Color color) {
+        int ONE = 2;
+        int TWO = 10;
+        int THREE = 25;
+        int FOUR = 50;
         float weight = 1.5f;
+        
         int valueWhite = 0;
         if (blackCount == 0) {
             if (whiteCount == 1)
