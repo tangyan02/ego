@@ -1,3 +1,4 @@
 .gradle/
 .idea/
 gomuku/build/
+build/
