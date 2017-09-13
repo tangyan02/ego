@@ -23,7 +23,7 @@ public class Main {
 
     private static boolean autoRun = false;
 
-    private static boolean updateFile = true;
+    private static boolean updateFile = false;
 
     private static Color aiColor = Color.WHITE;
 

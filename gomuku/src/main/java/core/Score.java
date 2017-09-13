@@ -83,8 +83,8 @@ class Score {
         int TWO = 10;
         int THREE = 25;
         int FOUR = 50;
-        float weight = 1.5f;
-        
+        float weight = 1.0f;
+
         int valueWhite = 0;
         if (blackCount == 0) {
             if (whiteCount == 1)
@@ -111,7 +111,7 @@ class Score {
 
         int value = 0;
         if (color == Color.BLACK) {
-            return (int) (valueBlack * weight) - valueWhite;
+            return valueBlack - (int) (valueWhite * weight);
         }
         if (color == Color.WHITE) {
             return valueWhite - (int) (valueBlack * weight);
