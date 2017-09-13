@@ -44,9 +44,11 @@ public class GomukuPlayer {
 
     public Result play(Color color) {
         Result result = game.search(color);
-        if (result.getMaxValue() == Integer.MIN_VALUE) {
-            config.comboDeep = 0;
-            result = game.search(color);
+        if (result != null) {
+            if (result.getMaxValue() == Integer.MIN_VALUE) {
+                config.comboDeep = 0;
+                result = game.search(color);
+            }
         }
         return result;
     }
