@@ -36,18 +36,21 @@ public class ComboProcessor {
     }
 
     Point canKill(Color targetColor) {
+        //计算我方四连杀
         result = null;
         cache.clear();
         dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.FOUR, null, null, null);
         if (result != null)
             return result;
 
+        //计算对手四连杀
         result = null;
         cache.clear();
         dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(), config.comboDeep, score, ComboTye.FOUR, null, null, null);
         if (result != null)
             return null;
 
+        //死算我方三连杀
         result = null;
         cache.clear();
         dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.THREE, null, null, null);
@@ -67,6 +70,7 @@ public class ComboProcessor {
             counter.countCombo++;
             return returnValue(false);
         }
+        //选取邻近的点计算连击
         List<Point> rangePoints;
         Set<Point> rangeSet = new HashSet<>();
         if (nextRange != null)
@@ -79,6 +83,7 @@ public class ComboProcessor {
             rangeSet.remove(lastPoint);
             rangePoints = new ArrayList<>(rangeSet);
         }
+        //分析选取的点
         Analyzer data = new Analyzer(gameMap, color, rangePoints, score, counter);
         if (color == targetColor) {
             if (data.getFiveAttack().size() > 0) {
