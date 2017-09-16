@@ -8,7 +8,10 @@ import helper.ConsolePrinter;
 import helper.MapDriver;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ComboProcessor {
 
@@ -35,23 +38,25 @@ public class ComboProcessor {
     Point canKill(Color targetColor) {
         result = null;
         cache.clear();
-        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.FOUR);
+        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.FOUR, null, null, null);
         if (result != null)
             return result;
 
         result = null;
         cache.clear();
-        dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(), config.comboDeep, score, ComboTye.FOUR);
+        dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(), config.comboDeep, score, ComboTye.FOUR, null, null, null);
         if (result != null)
             return null;
 
         result = null;
         cache.clear();
-        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.THREE);
+        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.THREE, null, null, null);
         return result;
     }
 
-    private boolean dfsKill(GameMap gameMap, Color color, Color targetColor, int level, Score score, ComboTye comboTye) {
+    private boolean dfsKill(GameMap gameMap, Color color, Color targetColor,
+                            int level, Score score, ComboTye comboTye,
+                            Set<Point> nextRange, Set<Point> oldRange, Point lastPoint) {
         //缓存
         Boolean cacheResult = cache.getComboResult();
         if (cacheResult != null) {
@@ -63,7 +68,17 @@ public class ComboProcessor {
             return returnValue(false);
         }
         List<Point> rangePoints;
-        rangePoints = gameMap.getNeighbor();
+        Set<Point> rangeSet = new HashSet<>();
+        if (nextRange != null)
+            rangeSet.addAll(nextRange);
+        if (oldRange != null)
+            rangeSet.addAll(oldRange);
+        if (rangeSet.isEmpty()) {
+            rangePoints = gameMap.getNeighbor();
+        } else {
+            rangeSet.remove(lastPoint);
+            rangePoints = new ArrayList<>(rangeSet);
+        }
         Analyzer data = new Analyzer(gameMap, color, rangePoints, score, counter);
         if (color == targetColor) {
             if (data.getFiveAttack().size() > 0) {
@@ -73,7 +88,8 @@ public class ComboProcessor {
             List<Point> points = getComboAttackPoints(data, comboTye);
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye);
+                Set<Point> newNextRange = gameMap.getPointLineNeibor(point);
+                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (level == config.comboDeep && value) {
                     result = point;
                 }
@@ -95,7 +111,8 @@ public class ComboProcessor {
             }
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye);
+                Set<Point> newNextRange = gameMap.getPointLineNeibor(point);
+                boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (!value) {
                     setColor(point, Color.NULL, color, targetColor, score, gameMap);
                     return returnValue(false);
@@ -150,14 +167,14 @@ public class ComboProcessor {
     }
 
     public static void main(String[] args) {
-        Color[][] colors = MapDriver.readMap();
+        Color[][] colors = MapDriver.readMap("score/blackCombo.txt");
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
         score.init(gameMap, Color.BLACK);
         long time = System.currentTimeMillis();
         Config config = new Config();
-        config.comboDeep = 7;
+        config.comboDeep = 13;
         ComboProcessor comboProcessor = new ComboProcessor();
         comboProcessor.init(gameMap, score, new Counter(), config, new Cache(config, gameMap, new Counter()));
         System.out.println(comboProcessor.canKill(Color.BLACK));

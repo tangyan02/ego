@@ -138,6 +138,28 @@ public class GameMap {
         return new ArrayList<>(neighbor);
     }
 
+    Set<Point> getPointLineNeibor(Point point) {
+        Set<Point> result = new HashSet<>();
+        for (int i = 0; i < 8; i++) {
+            int x = point.getX();
+            int y = point.getY();
+            for (int k = 0; k < 4; k++) {
+                x += directX[i];
+                y += directY[i];
+                if (!reachable(x, y)) {
+                    break;
+                }
+                if (map[x][y] != Color.NULL)
+                    continue;
+                Point newPoint = new Point(x, y);
+                if (neighbor.contains(newPoint)) {
+                    result.add(newPoint);
+                }
+            }
+        }
+        return result;
+    }
+
     public long getHashCode() {
         return hashCode;
     }
@@ -154,7 +176,7 @@ public class GameMap {
     }
 
     public static void main(String[] args) {
-        Color[][] map = MapDriver.readMap();
+        Color[][] map = MapDriver.readMap("score/normal.txt");
         GameMap gameMap = new GameMap(map);
         List<Point> points = gameMap.getNeighbor();
         long hashCode = gameMap.getHashCode();
@@ -165,6 +187,10 @@ public class GameMap {
         long hashCode2 = gameMap.getHashCode();
         assert hashCode == hashCode2;
         gameMap.getNeighbor();
+
+        Set<Point> linePoints = gameMap.getPointLineNeibor(new Point(9, 6));
+        assert linePoints.size() > 0;
+
     }
 
 }

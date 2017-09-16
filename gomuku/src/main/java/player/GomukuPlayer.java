@@ -28,7 +28,7 @@ public class GomukuPlayer {
             config.searchDeep = 6;
         }
         if (level == Level.VERY_HIGH) {
-            config.comboDeep = 11;
+            config.comboDeep = 15;
             config.searchDeep = 6;
         }
         game.init(map, config);
