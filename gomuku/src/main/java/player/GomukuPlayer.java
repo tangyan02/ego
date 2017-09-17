@@ -24,7 +24,7 @@ public class GomukuPlayer {
             config.searchDeep = 6;
         }
         if (level == Level.HIGH) {
-            config.comboDeep = 7;
+            config.comboDeep = 9;
             config.searchDeep = 6;
         }
         if (level == Level.VERY_HIGH) {

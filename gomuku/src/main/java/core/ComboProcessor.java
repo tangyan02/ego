@@ -85,6 +85,12 @@ public class ComboProcessor {
         }
         //分析选取的点
         Analyzer data = new Analyzer(gameMap, color, rangePoints, score, counter);
+        //如果对面形成活三，则转换会冲四
+        if (comboTye == ComboTye.THREE) {
+            if (color == targetColor && !data.getThreeDefence().isEmpty()) {
+                comboTye = ComboTye.FOUR;
+            }
+        }
         if (color == targetColor) {
             if (data.getFiveAttack().size() > 0) {
                 counter.countCombo++;
@@ -173,13 +179,14 @@ public class ComboProcessor {
 
     public static void main(String[] args) {
         Color[][] colors = MapDriver.readMap("score/blackCombo.txt");
+//        Color[][] colors = MapDriver.readMap();
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
         score.init(gameMap, Color.BLACK);
         long time = System.currentTimeMillis();
         Config config = new Config();
-        config.comboDeep = 13;
+        config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
         comboProcessor.init(gameMap, score, new Counter(), config, new Cache(config, gameMap, new Counter()));
         System.out.println(comboProcessor.canKill(Color.BLACK));
