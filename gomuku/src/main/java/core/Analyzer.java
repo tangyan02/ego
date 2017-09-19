@@ -45,11 +45,11 @@ public class Analyzer {
         this.points = points;
         this.score = score;
         this.color = color;
-        getAndDefence();
+        getAttackAndDefence();
         counter.analyzeTime += System.currentTimeMillis() - time;
     }
 
-    private void getAndDefence() {
+    private void getAttackAndDefence() {
         fiveAttack = new HashSet<>();
         fourAttack = new HashSet<>();
         threeOpenAttack = new HashSet<>();
@@ -80,9 +80,6 @@ public class Analyzer {
                             if (GameMap.reachable(headX, headY)) {
                                 Color headColor = gameMap.getColor(headX, headY);
                                 Color tailColor = gameMap.getColor(x, y);
-                                if (tailColor == Color.NULL && headColor == Color.NULL) {
-                                    threeOpenAttack.add(point);
-                                }
                                 if (headColor == Color.NULL && tailColor != Color.NULL) {
                                     int sideX = x + directX[i];
                                     int sideY = y + directY[i];
@@ -137,7 +134,18 @@ public class Analyzer {
                                 }
                             }
                             if (headColor == Color.NULL && tailColor == Color.NULL) {
-                                threeDefence.add(point);
+                                int sideX = x + directX[i];
+                                int sideY = y + directY[i];
+                                if (GameMap.reachable(sideX, sideY) &&
+                                        gameMap.getColor(sideX, sideY) == Color.NULL) {
+                                    threeDefence.add(point);
+                                }
+                                sideX = x - directX[i];
+                                sideY = y - directY[i];
+                                if (GameMap.reachable(sideX, sideY) &&
+                                        gameMap.getColor(sideX, sideY) == Color.NULL) {
+                                    threeDefence.add(point);
+                                }
                             }
                         }
                     }

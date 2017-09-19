@@ -178,18 +178,18 @@ public class ComboProcessor {
     }
 
     public static void main(String[] args) {
-        Color[][] colors = MapDriver.readMap("score/blackCombo.txt");
-//        Color[][] colors = MapDriver.readMap();
+//        Color[][] colors = MapDriver.readMap("score/blackCombo.txt");
+        Color[][] colors = MapDriver.readMap();
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
-        score.init(gameMap, Color.BLACK);
+        score.init(gameMap, Color.WHITE);
         long time = System.currentTimeMillis();
         Config config = new Config();
         config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
         comboProcessor.init(gameMap, score, new Counter(), config, new Cache(config, gameMap, new Counter()));
-        System.out.println(comboProcessor.canKill(Color.BLACK));
+        System.out.println(comboProcessor.canKill(Color.WHITE));
         System.out.println(System.currentTimeMillis() - time + "ms");
     }
 }
