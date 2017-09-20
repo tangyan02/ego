@@ -15,8 +15,6 @@ public class Game {
 
     private Counter counter = new Counter();
 
-    private Result result = new Result();
-
     private ConsolePrinter consolePrinter = new ConsolePrinter();
 
     private ComboProcessor comboProcessor = new ComboProcessor();
@@ -25,8 +23,6 @@ public class Game {
 
     private Config config;
 
-    private Cache cache;
-
     private Score score = new Score();
 
     public void init(Color[][] map, Config config) {
@@ -34,8 +30,10 @@ public class Game {
         this.config = config;
     }
 
-    public Result search(Color color) {
-        result.reset();
+    public Result search(Color color, boolean random) {
+        Result result = new Result();
+        Cache cache = new Cache(config, gameMap, counter);
+
         aiColor = color;
         if (WinChecker.win(gameMap.getMap()) != null) {
             return null;
@@ -43,7 +41,6 @@ public class Game {
         //初始化
         consolePrinter.init(counter);
         score.init(gameMap, aiColor);
-        cache = new Cache(config, gameMap, counter);
         comboProcessor.init(gameMap, score, counter, config, cache);
 
         //只有一个扩展点的情形直接返回
@@ -65,7 +62,27 @@ public class Game {
             }
         }
         config.comboDeep = comboLevel;
-        dfsScore(config.searchDeep, color, Integer.MAX_VALUE, 0);
+
+        //逐个计算，并记录
+        int extreme = Integer.MIN_VALUE;
+        for (Point point : points) {
+            setColor(point, color, Color.NULL, aiColor);
+            int value = dfsScore(config.searchDeep - 1, color.getOtherColor(), null, extreme);
+            counter.finishStep++;
+            consolePrinter.printInfo(point, value);
+
+            if (value >= extreme) {
+                extreme = value;
+                result.add(point, value);
+
+                if (extreme == Integer.MAX_VALUE) {
+                    result.add(point, value);
+                    break;
+                }
+            }
+            setColor(point, Color.NULL, color, aiColor);
+        }
+
         return result;
     }
 
@@ -98,9 +115,6 @@ public class Game {
         //输赢判定
         if (!data.getFiveAttack().isEmpty()) {
             if (color == aiColor) {
-                if (level == config.searchDeep) {
-                    result.add(data.getFiveAttack().iterator().next(), Integer.MAX_VALUE);
-                }
                 return Integer.MAX_VALUE;
             }
             if (color == aiColor.getOtherColor()) {
@@ -121,13 +135,6 @@ public class Game {
                 if (value > parentMin) {
                     setColor(point, Color.NULL, color, aiColor);
                     return value;
-                }
-                if (level == config.searchDeep) {
-                    if (value >= extreme) {
-                        result.add(point, value);
-                    }
-                    counter.finishStep++;
-                    consolePrinter.printInfo(point, value);
                 }
                 if (value > extreme) {
                     extreme = value;

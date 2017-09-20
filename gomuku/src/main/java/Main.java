@@ -38,7 +38,7 @@ public class Main {
         if (!debug) {
             listen();
         }
-        GomukuPlayer gomukuPlayer = new GomukuPlayer(map, Level.VERY_HIGH);
+        GomukuPlayer gomukuPlayer = new GomukuPlayer(map, Level.HIGH);
         result = gomukuPlayer.play(aiColor).getPoint();
         System.out.println(result);
         map[result.getX()][result.getY()] = aiColor;
