@@ -30,7 +30,7 @@ public class Game {
         this.config = config;
     }
 
-    public Result search(Color color, boolean random) {
+    public Result search(Color color) {
         Result result = new Result();
         Cache cache = new Cache(config, gameMap, counter);
 
