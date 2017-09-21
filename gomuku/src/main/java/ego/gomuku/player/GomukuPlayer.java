@@ -43,11 +43,22 @@ public class GomukuPlayer {
     }
 
     public Result play(Color color) {
-        Result result = game.search(color);
+        Result result = game.search(color, false);
         if (result != null) {
             if (result.getMaxValue() == Integer.MIN_VALUE) {
                 config.comboDeep = 0;
-                result = game.search(color);
+                result = game.search(color, false);
+            }
+        }
+        return result;
+    }
+
+    public Result randomBegin(Color color) {
+        Result result = game.search(color, true);
+        if (result != null) {
+            if (result.getMaxValue() == Integer.MIN_VALUE) {
+                config.comboDeep = 0;
+                result = game.search(color, true);
             }
         }
         return result;

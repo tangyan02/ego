@@ -30,7 +30,7 @@ public class Game {
         this.config = config;
     }
 
-    public Result search(Color color) {
+    public Result search(Color color, boolean randomBegin) {
         Result result = new Result();
         Cache cache = new Cache(config, gameMap, counter);
 
@@ -42,6 +42,15 @@ public class Game {
         consolePrinter.init(counter);
         score.init(gameMap, aiColor);
         comboProcessor.init(gameMap, score, counter, config, cache);
+
+        //判断是否随机开局
+        if (randomBegin) {
+            Point point = BeginningProcessor.getBeginningRandomPoint(gameMap.getMap());
+            if (point != null) {
+                result.add(point, 0);
+                return result;
+            }
+        }
 
         //只有一个扩展点的情形直接返回
         Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score, counter);
@@ -64,6 +73,7 @@ public class Game {
         config.comboDeep = comboLevel;
 
         //逐个计算，并记录
+        counter.allStep = points.size();
         int extreme = Integer.MIN_VALUE;
         for (Point point : points) {
             setColor(point, color, Color.NULL, aiColor);
@@ -122,10 +132,6 @@ public class Game {
             }
         }
         List<Point> points = LevelProcessor.getExpandPoints(data);
-        //进度计算
-        if (level == config.searchDeep) {
-            counter.allStep = points.size();
-        }
         //遍历扩展节点
         int extreme = color == aiColor ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         for (Point point : points) {
