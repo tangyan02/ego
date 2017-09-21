@@ -38,6 +38,11 @@ class LevelProcessor {
         result.addAll(data.getThreeOpenAttack());
         result.addAll(data.getTwoAttack());
         result.addAll(data.getNotKey());
+
+        //如果节点过多则减少一部分
+        while (result.size() > 40) {
+            result = result.subList(0, 40);
+        }
         return result;
     }
 }
