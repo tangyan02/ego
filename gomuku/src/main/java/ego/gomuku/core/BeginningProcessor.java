@@ -92,7 +92,6 @@ public class BeginningProcessor {
             remove(neighbor, x3, mid + 1);
         }
 
-        System.out.println(neighbor);
         return neighbor.get(new Random().nextInt(neighbor.size()));
     }
 
