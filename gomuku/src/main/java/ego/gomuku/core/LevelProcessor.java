@@ -40,8 +40,8 @@ class LevelProcessor {
         result.addAll(data.getNotKey());
 
         //如果节点过多则减少一部分
-        while (result.size() > 40) {
-            result = result.subList(0, 40);
+        while (result.size() > Config.nodeLImit) {
+            result = result.subList(0, Config.nodeLImit);
         }
         return result;
     }
