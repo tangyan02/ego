@@ -6,7 +6,7 @@
 
 ## 五子棋
 - QQ对战平台 九段
-- 黑棋先手击败 YiXin13(30s)
+- 黑棋先手击败 YiXin13(60s)
 
 [点击体验](http://tangyancode.cn:8080/game)
 
