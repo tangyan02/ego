@@ -1,6 +1,6 @@
 # EGO AI 引擎合集
 
-详细说明日志见[WIKI](https://github.com/tangyan02/ego/wiki)
+详细日志见 [WIKI](https://github.com/tangyan02/ego/wiki)
 
 # 简要
 
