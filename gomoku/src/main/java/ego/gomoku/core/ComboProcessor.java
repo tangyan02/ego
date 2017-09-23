@@ -20,39 +20,45 @@ public class ComboProcessor {
 
     private Counter counter;
 
-    private Config config;
-
     private Cache cache;
 
     private Point result;
 
-    public void init(GameMap gameMap, Score score, Counter counter, Config config, Cache cache) {
+    private int currentLevel;
+
+    public void init(GameMap gameMap, Score score, Counter counter, Cache cache) {
         this.gameMap = gameMap;
         this.score = score;
         this.counter = counter;
-        this.config = config;
         this.cache = cache;
     }
 
-    Point canKill(Color targetColor) {
+    Point canKill(Color targetColor, int level) {
+        currentLevel = level;
         //计算我方四连杀
         result = null;
         cache.clear();
-        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.FOUR, null, null, null);
+        dfsKill(gameMap, targetColor, targetColor,
+                level, score, ComboTye.FOUR,
+                null, null, null);
         if (result != null)
             return result;
 
         //计算对手四连杀
         result = null;
         cache.clear();
-        dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(), config.comboDeep, score, ComboTye.FOUR, null, null, null);
+        dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(),
+                level, score, ComboTye.FOUR,
+                null, null, null);
         if (result != null)
             return null;
 
         //死算我方三连杀
         result = null;
         cache.clear();
-        dfsKill(gameMap, targetColor, targetColor, config.comboDeep, score, ComboTye.THREE, null, null, null);
+        dfsKill(gameMap, targetColor, targetColor,
+                level, score, ComboTye.THREE,
+                null, null, null);
         return result;
     }
 
@@ -100,7 +106,7 @@ public class ComboProcessor {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
                 Set<Point> newNextRange = gameMap.getPointLineNeighbor(point);
                 boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
-                if (level == config.comboDeep && value) {
+                if (level == currentLevel && value) {
                     result = point;
                 }
                 if (value) {
@@ -182,13 +188,13 @@ public class ComboProcessor {
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
-        score.init(gameMap, Color.WHITE);
+        score.init(gameMap, Color.BLACK);
         long time = System.currentTimeMillis();
         Config config = new Config();
         config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
-        comboProcessor.init(gameMap, score, new Counter(), config, new Cache(config, gameMap, new Counter()));
-        System.out.println(comboProcessor.canKill(Color.WHITE));
+        comboProcessor.init(gameMap, score, new Counter(), new Cache(config, gameMap, new Counter()));
+        System.out.println(comboProcessor.canKill(Color.BLACK, 15));
         System.out.println(System.currentTimeMillis() - time + "ms");
     }
 }
