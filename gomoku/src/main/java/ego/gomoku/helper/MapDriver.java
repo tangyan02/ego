@@ -7,7 +7,7 @@ import java.io.*;
 
 public class MapDriver {
 
-    static String resourcePath = "gomuku/src/main/resources/";
+    static String resourcePath = "gomoku/src/main/resources/";
 
     public static Color[][] readMap() {
         return readMap("input.txt");

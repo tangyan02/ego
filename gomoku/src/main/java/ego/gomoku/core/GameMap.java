@@ -29,7 +29,7 @@ public class GameMap {
             }
     }
 
-    public GameMap(Color[][] map) {
+    GameMap(Color[][] map) {
         this.map = map;
         for (int i = 0; i < Config.size; i++)
             for (int j = 0; j < Config.size; j++) {
@@ -41,7 +41,7 @@ public class GameMap {
             }
     }
 
-    static boolean reachable(Point point) {
+    private static boolean reachable(Point point) {
         if (point.getX() < 0 || point.getX() >= Config.size)
             return false;
         if (point.getY() < 0 || point.getY() >= Config.size)
@@ -61,7 +61,7 @@ public class GameMap {
         return map;
     }
 
-    public Color getColor(Point point) {
+    Color getColor(Point point) {
         if (!reachable(point)) {
             return null;
         }
@@ -82,7 +82,7 @@ public class GameMap {
         updateNeighbor(point, color);
     }
 
-    void updateNeighbor(Point point, Color pointColor) {
+    private void updateNeighbor(Point point, Color pointColor) {
         if (pointColor != Color.NULL) {
             List<Point> points = new ArrayList<>();
             neighbor.remove(point);
@@ -138,7 +138,7 @@ public class GameMap {
         return new ArrayList<>(neighbor);
     }
 
-    Set<Point> getPointLineNeibor(Point point) {
+    Set<Point> getPointLineNeighbor(Point point) {
         Set<Point> result = new HashSet<>();
         for (int i = 0; i < 8; i++) {
             int x = point.getX();
@@ -160,7 +160,7 @@ public class GameMap {
         return result;
     }
 
-    public long getHashCode() {
+    long getHashCode() {
         return hashCode;
     }
 
@@ -176,7 +176,7 @@ public class GameMap {
     }
 
     public static void main(String[] args) {
-        Color[][] map = MapDriver.readMap("score/normal.txt");
+        Color[][] map = MapDriver.readMap("cases/normal.txt");
         GameMap gameMap = new GameMap(map);
         List<Point> points = gameMap.getNeighbor();
         long hashCode = gameMap.getHashCode();
@@ -188,7 +188,7 @@ public class GameMap {
         assert hashCode == hashCode2;
         gameMap.getNeighbor();
 
-        Set<Point> linePoints = gameMap.getPointLineNeibor(new Point(9, 6));
+        Set<Point> linePoints = gameMap.getPointLineNeighbor(new Point(9, 6));
         assert linePoints.size() > 0;
 
     }

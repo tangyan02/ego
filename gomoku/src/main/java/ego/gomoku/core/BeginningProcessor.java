@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class BeginningProcessor {
 
-    static public Point getBeginningRandomPoint(Color[][] map) {
+    static Point getBeginningRandomPoint(Color[][] map) {
         int count = 0;
         int mid = Config.size / 2;
         Point whitePoint = null;
@@ -23,7 +23,7 @@ public class BeginningProcessor {
                         whitePoint = new Point(i, j);
                 }
             }
-        if (count != 2) {
+        if (count != 2 || whitePoint == null) {
             return null;
         }
         if (map[mid][mid] != Color.BLACK) {
@@ -95,7 +95,7 @@ public class BeginningProcessor {
         return neighbor.get(new Random().nextInt(neighbor.size()));
     }
 
-    static void remove(List<Point> list, int x, int y) {
+    private static void remove(List<Point> list, int x, int y) {
         Point result = null;
         for (Point point : list) {
             if (point.getX() == x && point.getY() == y)
@@ -106,7 +106,7 @@ public class BeginningProcessor {
     }
 
     static public void main(String[] args) {
-        Color[][] map = MapDriver.readMap("score/beginning.txt");
+        Color[][] map = MapDriver.readMap("cases/beginning.txt");
         Point point = getBeginningRandomPoint(map);
         assert map != null;
         assert point != null;

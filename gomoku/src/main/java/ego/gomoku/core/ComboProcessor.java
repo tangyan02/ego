@@ -98,7 +98,7 @@ public class ComboProcessor {
             List<Point> points = getComboAttackPoints(data, comboTye);
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                Set<Point> newNextRange = gameMap.getPointLineNeibor(point);
+                Set<Point> newNextRange = gameMap.getPointLineNeighbor(point);
                 boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (level == config.comboDeep && value) {
                     result = point;
@@ -121,7 +121,7 @@ public class ComboProcessor {
             }
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                Set<Point> newNextRange = gameMap.getPointLineNeibor(point);
+                Set<Point> newNextRange = gameMap.getPointLineNeighbor(point);
                 boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (!value) {
                     setColor(point, Color.NULL, color, targetColor, score, gameMap);
@@ -177,8 +177,8 @@ public class ComboProcessor {
     }
 
     public static void main(String[] args) {
-//        Color[][] colors = MapDriver.readMap("score/blackCombo.txt");
-        Color[][] colors = MapDriver.readMap();
+        Color[][] colors = MapDriver.readMap("cases/blackCombo.txt");
+//        Color[][] colors = MapDriver.readMap();
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();

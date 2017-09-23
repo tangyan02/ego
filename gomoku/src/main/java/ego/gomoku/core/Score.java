@@ -130,7 +130,7 @@ class Score {
     }
 
     public static void main(String[] args) {
-        Color[][] map = MapDriver.readMap("score/fourTop.txt");
+        Color[][] map = MapDriver.readMap("cases/fourTop.txt");
         GameMap gameMap = new GameMap(map);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
@@ -146,7 +146,7 @@ class Score {
             System.out.println();
         }
 
-        map = MapDriver.readMap("score/fourButton.txt");
+        map = MapDriver.readMap("cases/fourButton.txt");
         gameMap = new GameMap(map);
         ConsolePrinter.printMap(gameMap);
         score = new Score();
