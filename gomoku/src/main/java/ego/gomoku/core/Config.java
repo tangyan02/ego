@@ -10,14 +10,12 @@ public class Config {
 
     public int cacheSize = 50000;
 
-    public long searchTimeOut = Long.MAX_VALUE;
+    public long searchTimeOut = 10 * 1000;
 
-//    public long comboTimeOut = Long.MAX_VALUE;
+    public long comboTimeOut = 10 * 1000;
 
     public static boolean debug = false;
 
     static int nodeLimit = 40;
-
-    long startTime;
 
 }

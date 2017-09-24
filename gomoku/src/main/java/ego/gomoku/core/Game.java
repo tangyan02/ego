@@ -1,6 +1,5 @@
 package ego.gomoku.core;
 
-import ego.gomoku.entity.CountData;
 import ego.gomoku.entity.Counter;
 import ego.gomoku.entity.Point;
 import ego.gomoku.enumeration.Color;
@@ -8,7 +7,10 @@ import ego.gomoku.exception.TimeOutException;
 import ego.gomoku.helper.ConsolePrinter;
 import ego.gomoku.helper.WinChecker;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Game {
 
@@ -26,7 +28,7 @@ public class Game {
 
     private Score score = new Score();
 
-    private int currentLevel;
+    private long startTime;
 
     public void init(Color[][] map, Config config) {
         gameMap = new GameMap(map);
@@ -34,7 +36,6 @@ public class Game {
     }
 
     public Result search(Color color, boolean randomBegin) {
-        config.startTime = System.currentTimeMillis();
         //减少一秒的停止预估
         config.searchTimeOut -= 1000;
 
@@ -66,32 +67,57 @@ public class Game {
             result.add(points.get(0), 0);
             return result;
         }
-        //初始胜利计算
+        //算杀
+        Set<Point> losePoints = new HashSet<>();
         int comboLevel = config.comboDeep;
 
-        for (int i = 1; i <= comboLevel; i += 2) {
-            config.comboDeep = i;
-            cache.clear();
-            Point winTry = comboProcessor.canKill(color, config.comboDeep);
-
-            if (winTry != null) {
-                result.add(winTry, Integer.MAX_VALUE);
-                return result;
+        //限时迭代，并预留一秒
+        startTime = System.currentTimeMillis() - 1000;
+        try {
+            for (int i = 1; i <= comboLevel; i += 2) {
+                cache.clear();
+                ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
+                Point winTry = comboResult.point;
+                //连击树已经搜完的情形
+                if (winTry == null && !comboResult.reachLastLevel) {
+                    System.out.println("combo end");
+                    break;
+                }
+                if (winTry != null) {
+                    result.add(winTry, Integer.MAX_VALUE);
+                    return result;
+                }
+                if (Config.debug) {
+                    System.out.printf("combo level %s finish\n", i);
+                }
+            }
+        } catch (TimeOutException ignored) {
+            if (Config.debug) {
+                System.out.println("combo time out");
             }
         }
-        config.comboDeep = comboLevel;
 
+        //限时迭代，并预留一秒
+        startTime = System.currentTimeMillis() - 1000;
         //逐个计算，并记录
         counter.allStep = points.size();
-        int extreme = Integer.MIN_VALUE;
         try {
             for (int level = 4; level <= config.searchDeep; level += 2) {
-                currentLevel = level;
+                int extreme = Integer.MIN_VALUE;
                 Result currentResult = new Result();
+                //把低层的最优解放到第一个处理
+                if (result.point != null) {
+                    points.remove(result.getPoint());
+                    points.add(0, result.getPoint());
+                }
                 for (Point point : points) {
                     setColor(point, color, Color.NULL, aiColor);
-                    int value = 0;
-                    value = dfsScore(level - 1, color.getOtherColor(), null, extreme);
+                    int value;
+                    if (!losePoints.contains(point)) {
+                        value = dfsScore(level - 1, color.getOtherColor(), null, extreme);
+                    } else {
+                        value = Integer.MIN_VALUE;
+                    }
 
                     counter.finishStep++;
                     consolePrinter.printInfo(point, value);
@@ -107,41 +133,27 @@ public class Game {
                     }
                     setColor(point, Color.NULL, color, aiColor);
                 }
+                if (Config.debug) {
+                    System.out.printf("search level %s finish %n%n", level);
+                }
                 result = currentResult;
                 //如果已经用掉一半的时间，则停止
-                if (System.currentTimeMillis() - config.startTime > config.searchTimeOut / 2) {
+                if (System.currentTimeMillis() - startTime > config.searchTimeOut / 2) {
                     break;
                 }
             }
         } catch (TimeOutException ignored) {
+            if (Config.debug) {
+                System.out.println("time out");
+            }
         }
         return result;
     }
 
-    public CountData getCountData() {
-        CountData data = new CountData();
-        data.setAllStep(counter.allStep);
-        data.setCount(counter.count);
-        data.setFinishStep(counter.finishStep);
-        return data;
-    }
-
     private int dfsScore(int level, Color color, Integer parentMin, Integer parentMax) throws TimeOutException {
         //是否超时判断
-        if (System.currentTimeMillis() - config.startTime > config.searchTimeOut) {
+        if (System.currentTimeMillis() - startTime > config.searchTimeOut) {
             throw new TimeOutException();
-        }
-
-        //斩杀剪枝
-        if (level == config.searchDeep - 2) {
-            if (comboProcessor.canKill(color, currentLevel * 2) != null) {
-                return Integer.MAX_VALUE;
-            }
-        }
-        if (level == config.searchDeep - 1) {
-            if (comboProcessor.canKill(color, currentLevel * 2) != null) {
-                return Integer.MIN_VALUE;
-            }
         }
         //叶子分数计算
         if (level == 0) {

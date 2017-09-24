@@ -4,6 +4,7 @@ import ego.gomoku.entity.Counter;
 import ego.gomoku.entity.Point;
 import ego.gomoku.enumeration.Color;
 import ego.gomoku.enumeration.ComboTye;
+import ego.gomoku.exception.TimeOutException;
 import ego.gomoku.helper.MapDriver;
 import ego.gomoku.helper.ConsolePrinter;
 
@@ -22,9 +23,13 @@ public class ComboProcessor {
 
     private Cache cache;
 
-    private Point result;
+    private ComboResult result;
 
     private int currentLevel;
+
+    private long startTime;
+
+    private long limitTime;
 
     public void init(GameMap gameMap, Score score, Counter counter, Cache cache) {
         this.gameMap = gameMap;
@@ -33,28 +38,36 @@ public class ComboProcessor {
         this.cache = cache;
     }
 
-    Point canKill(Color targetColor, int level) {
+    ComboResult canKill(Color targetColor, int level, long startTime, long limitTime) throws TimeOutException {
+        this.startTime = startTime;
+        this.limitTime = limitTime;
         currentLevel = level;
+        //连击结果初始化
+        result = new ComboResult();
+        result.reachLastLevel = false;
         //计算我方四连杀
-        result = null;
+        result.point = null;
         cache.clear();
         dfsKill(gameMap, targetColor, targetColor,
                 level, score, ComboTye.FOUR,
                 null, null, null);
-        if (result != null)
+        if (result.point != null)
             return result;
 
         //计算对手四连杀
-        result = null;
+        result.point = null;
         cache.clear();
         dfsKill(gameMap, targetColor.getOtherColor(), targetColor.getOtherColor(),
                 level, score, ComboTye.FOUR,
                 null, null, null);
-        if (result != null)
-            return null;
+        if (result.point != null) {
+            result.point = null;
+            result.reachLastLevel = false;
+            return result;
+        }
 
         //死算我方三连杀
-        result = null;
+        result.point = null;
         cache.clear();
         dfsKill(gameMap, targetColor, targetColor,
                 level, score, ComboTye.THREE,
@@ -64,7 +77,11 @@ public class ComboProcessor {
 
     private boolean dfsKill(GameMap gameMap, Color color, Color targetColor,
                             int level, Score score, ComboTye comboTye,
-                            Set<Point> nextRange, Set<Point> oldRange, Point lastPoint) {
+                            Set<Point> nextRange, Set<Point> oldRange, Point lastPoint) throws TimeOutException {
+        //超时计算
+        if (System.currentTimeMillis() - startTime > limitTime) {
+            throw new TimeOutException();
+        }
         //缓存
         Boolean cacheResult = cache.getComboResult();
         if (cacheResult != null) {
@@ -72,6 +89,7 @@ public class ComboProcessor {
         }
 
         if (level == 0) {
+            result.reachLastLevel = true;
             counter.countCombo++;
             return returnValue(false);
         }
@@ -107,7 +125,7 @@ public class ComboProcessor {
                 Set<Point> newNextRange = gameMap.getPointLineNeighbor(point);
                 boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (level == currentLevel && value) {
-                    result = point;
+                    result.point = point;
                 }
                 if (value) {
                     setColor(point, Color.NULL, color, targetColor, score, gameMap);
@@ -182,7 +200,7 @@ public class ComboProcessor {
         gameMap.setColor(point, color);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws TimeOutException {
         Color[][] colors = MapDriver.readMap("cases/blackCombo.txt");
 //        Color[][] colors = MapDriver.readMap();
         GameMap gameMap = new GameMap(colors);
@@ -194,7 +212,7 @@ public class ComboProcessor {
         config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
         comboProcessor.init(gameMap, score, new Counter(), new Cache(config, gameMap, new Counter()));
-        System.out.println(comboProcessor.canKill(Color.BLACK, 15));
+        System.out.println(comboProcessor.canKill(Color.BLACK, 15, System.currentTimeMillis(), config.comboTimeOut).point);
         System.out.println(System.currentTimeMillis() - time + "ms");
     }
 }

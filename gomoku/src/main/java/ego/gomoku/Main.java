@@ -1,7 +1,6 @@
 package ego.gomoku;
 
 import ego.gomoku.core.Config;
-import ego.gomoku.entity.CountData;
 import ego.gomoku.entity.Point;
 import ego.gomoku.enumeration.Color;
 import ego.gomoku.enumeration.Level;
@@ -25,9 +24,9 @@ public class Main {
 
     private static boolean autoRun = false;
 
-    private static boolean updateFile = true;
+    private static boolean updateFile = false;
 
-    private static Color aiColor = Color.BLACK;
+    private static Color aiColor = Color.WHITE;
 
     public static void main(String[] args) {
         System.out.println("正在初始化数据...");
@@ -37,10 +36,7 @@ public class Main {
             return;
         }
         Config.debug = debug;
-        if (!debug) {
-            listen();
-        }
-        GomokuPlayer gomokuPlayer = new GomokuPlayer(map, Level.HIGH);
+        GomokuPlayer gomokuPlayer = new GomokuPlayer(map, Level.VERY_HIGH);
         result = gomokuPlayer.play(aiColor).getPoint();
         System.out.println(result);
         map[result.getX()][result.getY()] = aiColor;
@@ -56,36 +52,4 @@ public class Main {
         aiColor = aiColor.getOtherColor();
         main(null);
     }
-
-    private static void listen() {
-        new Thread(() -> {
-            while (true) {
-                CountData data = gomokuPlayer.getCountData();
-                if (data.getAllStep() > 0 && progress == 0) {
-                    progress = data.getAllStep();
-                    for (int i = 0; i < progress; i++) {
-                        System.out.print("=");
-                    }
-                    System.out.println();
-                }
-                if (data.getFinishStep() > currentProgress) {
-                    for (int i = 0; i < data.getFinishStep() - currentProgress; i++) {
-                        System.out.print(">");
-                    }
-                    currentProgress = data.getFinishStep();
-                }
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (progress == currentProgress && progress > 0) {
-                    System.out.println();
-                    System.out.println(result.getX() + " " + result.getY());
-                    return;
-                }
-            }
-        }).start();
-    }
-
 }
