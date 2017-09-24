@@ -6,6 +6,6 @@ public class ComboResult {
 
     public Point point = null;
 
-    public boolean reachLastLevel = false;
+    public boolean timeOut = false;
 
 }

@@ -38,13 +38,12 @@ public class ComboProcessor {
         this.cache = cache;
     }
 
-    ComboResult canKill(Color targetColor, int level, long startTime, long limitTime) throws TimeOutException {
+    ComboResult canKill(Color targetColor, int level, long startTime, long limitTime) {
         this.startTime = startTime;
         this.limitTime = limitTime;
         currentLevel = level;
         //连击结果初始化
         result = new ComboResult();
-        result.reachLastLevel = false;
         //计算我方四连杀
         result.point = null;
         cache.clear();
@@ -62,7 +61,6 @@ public class ComboProcessor {
                 null, null, null);
         if (result.point != null) {
             result.point = null;
-            result.reachLastLevel = false;
             return result;
         }
 
@@ -77,10 +75,11 @@ public class ComboProcessor {
 
     private boolean dfsKill(GameMap gameMap, Color color, Color targetColor,
                             int level, Score score, ComboTye comboTye,
-                            Set<Point> nextRange, Set<Point> oldRange, Point lastPoint) throws TimeOutException {
+                            Set<Point> nextRange, Set<Point> oldRange, Point lastPoint) {
         //超时计算
         if (System.currentTimeMillis() - startTime > limitTime) {
-            throw new TimeOutException();
+            result.timeOut = true;
+            return false;
         }
         //缓存
         Boolean cacheResult = cache.getComboResult();
@@ -89,7 +88,6 @@ public class ComboProcessor {
         }
 
         if (level == 0) {
-            result.reachLastLevel = true;
             counter.countCombo++;
             return returnValue(false);
         }
@@ -201,18 +199,19 @@ public class ComboProcessor {
     }
 
     public static void main(String[] args) throws TimeOutException {
-        Color[][] colors = MapDriver.readMap("cases/blackCombo.txt");
-//        Color[][] colors = MapDriver.readMap();
+//        Color[][] colors = MapDriver.readMap("cases/blackCombo.txt");
+        Color[][] colors = MapDriver.readMap();
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
-        score.init(gameMap, Color.BLACK);
+        Color color = Color.WHITE;
+        score.init(gameMap, color);
         long time = System.currentTimeMillis();
         Config config = new Config();
         config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
         comboProcessor.init(gameMap, score, new Counter(), new Cache(config, gameMap, new Counter()));
-        System.out.println(comboProcessor.canKill(Color.BLACK, 15, System.currentTimeMillis(), config.comboTimeOut).point);
+        System.out.println(comboProcessor.canKill(color, 15, System.currentTimeMillis(), config.comboTimeOut).point);
         System.out.println(System.currentTimeMillis() - time + "ms");
     }
 }

@@ -10,13 +10,7 @@ import ego.gomoku.helper.WinChecker;
 
 public class Main {
 
-    private static GomokuPlayer gomokuPlayer = null;
-
     private static Color[][] map = MapDriver.readMap();
-
-    private static int progress = 0;
-
-    private static int currentProgress = 0;
 
     private static Point result = null;
 
@@ -24,9 +18,9 @@ public class Main {
 
     private static boolean autoRun = false;
 
-    private static boolean updateFile = false;
+    private static boolean updateFile = true;
 
-    private static Color aiColor = Color.WHITE;
+    private static Color aiColor = Color.BLACK;
 
     public static void main(String[] args) {
         System.out.println("正在初始化数据...");

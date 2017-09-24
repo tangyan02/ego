@@ -23,14 +23,16 @@ public class GomokuPlayer {
             config.searchDeep = 6;
         }
         if (level == Level.HIGH) {
-            config.comboDeep = 9;
+            config.comboDeep = 20;
             config.searchDeep = 6;
+            config.searchTimeOut = 10 * 1000;
+            config.comboTimeOut = 5 * 1000;
         }
         if (level == Level.VERY_HIGH) {
             config.comboDeep = 100;
             config.searchDeep = 100;
-            config.searchTimeOut = 30 * 1000;
-            config.comboTimeOut = 30 * 1000;
+            config.searchTimeOut = 20 * 1000;
+            config.comboTimeOut = 10 * 1000;
         }
         game.init(map, config);
     }
@@ -41,23 +43,11 @@ public class GomokuPlayer {
 
     public Result play(Color color) {
         Result result = game.search(color, false);
-        if (result != null) {
-            if (result.getMaxValue() == Integer.MIN_VALUE) {
-                config.comboDeep = 0;
-                result = game.search(color, false);
-            }
-        }
         return result;
     }
 
     public Result randomBegin(Color color) {
         Result result = game.search(color, true);
-        if (result != null) {
-            if (result.getMaxValue() == Integer.MIN_VALUE) {
-                config.comboDeep = 0;
-                result = game.search(color, true);
-            }
-        }
         return result;
     }
 
