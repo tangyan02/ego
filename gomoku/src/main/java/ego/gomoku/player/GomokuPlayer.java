@@ -27,7 +27,7 @@ public class GomokuPlayer {
             config.searchDeep = 6;
         }
         if (level == Level.VERY_HIGH) {
-            config.comboDeep = 15;
+            config.comboDeep = 100;
             config.searchDeep = 100;
             config.searchTimeOut = 30 * 1000;
             config.comboTimeOut = 30 * 1000;

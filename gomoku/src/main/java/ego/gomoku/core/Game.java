@@ -71,21 +71,48 @@ public class Game {
         Set<Point> losePoints = new HashSet<>();
         int comboLevel = config.comboDeep;
 
-        //限时迭代，并预留一秒
+        //连击的限时迭代，并预留一秒
         startTime = System.currentTimeMillis() - 1000;
+        boolean currentColorEnd = false;
         try {
             for (int i = 1; i <= comboLevel; i += 2) {
-                cache.clear();
-                ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
-                Point winTry = comboResult.point;
-                //连击树已经搜完的情形
-                if (winTry == null && !comboResult.reachLastLevel) {
-                    System.out.println("combo end");
-                    break;
+                //我方直接的连击
+                if (!currentColorEnd) {
+                    ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
+                    Point winTry = comboResult.point;
+                    //连击树已经搜完的情形
+                    if (winTry == null && !comboResult.reachLastLevel) {
+                        currentColorEnd = true;
+                        System.out.println("current combo end");
+                    }
+                    if (winTry != null) {
+                        result.add(winTry, Integer.MAX_VALUE);
+                        return result;
+                    }
                 }
-                if (winTry != null) {
-                    result.add(winTry, Integer.MAX_VALUE);
-                    return result;
+                //对方连击
+                Set<Point> endOtherPoint = new HashSet<>();
+                for (Point point : points) {
+                    //已经确认失败的不再搜索
+                    if (losePoints.contains(point)) {
+                        continue;
+                    }
+                    //已经搜到极限的不再搜
+                    if (endOtherPoint.contains(point)) {
+                        continue;
+                    }
+                    gameMap.setColor(point, color.getOtherColor());
+
+                    ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
+                    Point winTry = comboResult.point;
+                    if (winTry == null && !comboResult.reachLastLevel) {
+                        endOtherPoint.add(point);
+                    }
+                    if (winTry != null) {
+                        losePoints.add(point);
+                    }
+
+                    gameMap.setColor(point, Color.NULL);
                 }
                 if (Config.debug) {
                     System.out.printf("combo level %s finish\n", i);
