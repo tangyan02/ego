@@ -171,8 +171,8 @@ public class Game {
             if (!timeOut) {
                 result = currentResult;
             }
-            //如果已经用掉二分之一的时间，则停止
-            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 2) {
+            //如果已经用掉不少的时间，则停止
+            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 3) {
                 break;
             }
         }

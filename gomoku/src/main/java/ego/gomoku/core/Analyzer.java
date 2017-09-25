@@ -160,8 +160,8 @@ public class Analyzer {
                                     gameMap.getColor(sideX, sideY) == Color.NULL) {
                                 threeDefence.add(point);
                             }
-                            sideX = x - directX[i];
-                            sideY = y - directY[i];
+                            sideX = headX - directX[i];
+                            sideY = headY - directY[i];
                             if (GameMap.reachable(sideX, sideY) &&
                                     gameMap.getColor(sideX, sideY) == Color.NULL) {
                                 threeDefence.add(point);
@@ -210,10 +210,11 @@ public class Analyzer {
     }
 
     public static void main(String[] args) {
-        GameMap gameMap = new GameMap(MapDriver.readMap("cases/blackCombo.txt"));
+//        GameMap gameMap = new GameMap(MapDriver.readMap("cases/blackCombo.txt"));
+        GameMap gameMap = new GameMap(MapDriver.readMap());
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
-        score.init(gameMap, Color.WHITE);
+        score.init(gameMap, Color.BLACK);
         Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score, new Counter());
 
         System.out.println("FIVE A");

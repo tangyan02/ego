@@ -16,6 +16,6 @@ public class Config {
 
     public static boolean debug = false;
 
-    static int nodeLimit = 40;
+    static int nodeLimit = 99;
 
 }

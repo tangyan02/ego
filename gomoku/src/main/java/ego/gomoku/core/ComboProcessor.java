@@ -204,7 +204,7 @@ public class ComboProcessor {
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
-        Color color = Color.WHITE;
+        Color color = Color.BLACK;
         score.init(gameMap, color);
         long time = System.currentTimeMillis();
         Config config = new Config();
