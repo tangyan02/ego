@@ -11,7 +11,7 @@ class LevelProcessor {
         List<Point> result = selectSet(data);
 
         if (result.isEmpty()) {
-            result.add(new Point(7, 7));
+            result.add(new Point(Config.size / 2, Config.size / 2));
             return result;
         }
 
