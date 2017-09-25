@@ -116,7 +116,7 @@ public class Game {
             }
         }
 
-        //已过已经输了，则朴素搜索
+        //如果已经输了，则朴素搜索
         if (otherWin) {
             losePoints.clear();
         }

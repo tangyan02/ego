@@ -64,7 +64,7 @@ public class ComboProcessor {
             return result;
         }
 
-        //死算我方三连杀
+        //计算我方三连杀
         result.point = null;
         cache.clear();
         dfsKill(gameMap, targetColor, targetColor,
