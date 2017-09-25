@@ -135,6 +135,6 @@ public class Piskvork {
     }
 
     private static void printPoint(Point point) {
-        System.out.printf("%s, %s\n", point.getX(), point.getX());
+        System.out.printf("%s,%s\n", point.getX(), point.getX());
     }
 }
