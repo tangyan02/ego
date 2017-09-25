@@ -79,4 +79,14 @@ public class MapDriver {
         } catch (Exception ignored) {
         }
     }
+
+    public static Color[][] getEmptyMap() {
+        Color[][] map = new Color[Config.size][Config.size];
+        for (int i = 0; i < Config.size; i++) {
+            for (int j = 0; j < Config.size; j++) {
+                map[i][j] = Color.NULL;
+            }
+        }
+        return map;
+    }
 }

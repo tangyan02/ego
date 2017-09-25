@@ -2,7 +2,7 @@ package ego.gomoku.core;
 
 public class Config {
 
-    public final static int size = 15;
+    public static int size = 15;
 
     public int searchDeep = 6;
 

@@ -142,7 +142,9 @@ public class Game {
                     value = Integer.MIN_VALUE;
                 }
                 if (timeOut) {
-                    System.out.println("time out");
+                    if (Config.debug) {
+                        System.out.println("time out");
+                    }
                     setColor(point, Color.NULL, color, aiColor);
                     break;
                 }
