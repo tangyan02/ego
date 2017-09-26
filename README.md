@@ -7,8 +7,9 @@
 ## 五子棋 v4.6.0
 - QQ对战平台 九段
 - 黑棋先手击败 YiXin13(60s)
-- 已支持GomokuCup的Piskvork协议
+- 支持GomokuCup的Piskvork协议
 
+[日志记录](https://github.com/tangyan02/ego/wiki)
 [点击体验](http://tangyancode.cn:8080/game)
 
 ## 数独 v1.0
