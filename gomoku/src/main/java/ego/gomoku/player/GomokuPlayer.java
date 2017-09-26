@@ -38,7 +38,7 @@ public class GomokuPlayer {
     }
 
     public void setCacheSize(int value) {
-        config.cacheSize = value;
+        Config.cacheSize = value;
     }
 
     public Result play(Color color) {
@@ -65,7 +65,7 @@ public class GomokuPlayer {
             time = Math.min(maxTime, time);
         }
         time = Math.min(moveTimeLimit, time);
-        time -= 500;
+        time -= 300;
         return time;
     }
 

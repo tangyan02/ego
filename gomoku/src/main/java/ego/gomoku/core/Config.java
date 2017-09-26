@@ -8,7 +8,7 @@ public class Config {
 
     public int comboDeep = 7;
 
-    public int cacheSize = 30000;
+    public static int cacheSize = 30000;
 
     public long searchTimeOut = 10 * 1000;
 

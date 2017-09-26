@@ -10,6 +10,7 @@ import ego.gomoku.player.GomokuPlayer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 /**
  * 适配Piskvork的主类
@@ -25,37 +26,51 @@ public class Piskvork {
 
     static int pointsCount = 0;
 
-    public static void main(String[] args) throws InterruptedException, IOException {
+    static LinkedList<String> messageBuffer = new LinkedList<>();
+
+    public static void main(String[] args) throws IOException {
         sendMessageToPiskvork("started :)");
+        new Thread(Piskvork::receiveMessage).start();
+        while (true) {
+            parseMessage();
+        }
+    }
+
+    private static void parseMessage() {
+        if (messageBuffer.size() > 0) {
+            String message = messageBuffer.getFirst();
+            int blankIndex = message.length();
+            for (int i = 0; i < message.length(); i++) {
+                if (message.charAt(i) == ' ' || message.charAt(i) == '\r' || message.charAt(i) == '\n') {
+                    blankIndex = i;
+                    break;
+                }
+            }
+            String command = message.substring(0, blankIndex);
+            String param = message.substring(blankIndex, message.length()).trim();
+            messageBuffer.removeFirst();
+            doCommand(command, param);
+        }
+    }
+
+    private static void receiveMessage() {
         try {
             while (true) {
                 //获取命令和参数
                 byte buffer[] = new byte[1024];
                 int count = System.in.read(buffer);
-                StringBuilder commandBuilder = new StringBuilder();
-                StringBuilder paramBuilder = new StringBuilder();
-                boolean commandFinish = false;
+                StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < count; i++) {
-                    if (!commandFinish) {
-                        if (buffer[i] <= 'Z' && buffer[i] >= 'A') {
-                            commandBuilder.append((char) buffer[i]);
-                        } else {
-                            commandFinish = true;
-                        }
-                    } else {
-                        if (buffer[i] > 0 && buffer[i] != '\n' && buffer[i] != '\r') {
-                            paramBuilder.append((char) buffer[i]);
-                        }
-                        if (buffer[i] == '\n') {
-                            //选择命令
-                            String command = commandBuilder.toString();
-                            String param = paramBuilder.toString();
-                            doCommand(command, param);
-                            commandBuilder = new StringBuilder();
-                            paramBuilder = new StringBuilder();
-                            commandFinish = false;
-                        }
+                    if (buffer[i] > 0 && buffer[i] != '\n' && buffer[i] != '\r') {
+                        builder.append((char) buffer[i]);
                     }
+                    if (buffer[i] == '\n') {
+                        //存入消息
+                        sendDebugToPiskvork("receive<-" + builder.toString());
+                        messageBuffer.addLast(builder.toString());
+                        builder = new StringBuilder();
+                    }
+
                 }
             }
         } catch (IOException e) {
@@ -63,12 +78,9 @@ public class Piskvork {
         } catch (Exception e) {
             sendErrorToPiskvork("unknown error " + e.toString() + " " + Arrays.toString(e.getStackTrace()));
         }
-        byte buffer[] = new byte[1024];
-        System.in.read(buffer);
     }
 
-    private static void doCommand(String command, String param) throws IOException {
-        sendDebugToPiskvork("receive<-" + command + " " + param);
+    private static void doCommand(String command, String param) {
         if (command.equals("START")) {
             commandStart(param);
         }
@@ -110,6 +122,10 @@ public class Piskvork {
             int value = convertStringToInt(inputs[1]);
             matchLimit = value;
         }
+        if (key.equals("max_memory ")) {
+            int value = convertStringToInt(inputs[1]);
+            Config.cacheSize = value / 10000;
+        }
     }
 
     private static void commandStart(String param) {
@@ -127,7 +143,7 @@ public class Piskvork {
         sendCommandToPiskvork("OK");
     }
 
-    private static void commandTurn(String param) throws IOException {
+    private static void commandTurn(String param) {
         String[] numbers = param.split(",");
         int x = convertStringToInt(numbers[0]);
         int y = convertStringToInt(numbers[1]);
@@ -149,37 +165,35 @@ public class Piskvork {
         printPoint(point);
     }
 
-    private static void commandBoard() throws IOException {
-        Color[][] map = MapDriver.getEmptyMap();
+    private static void commandBoard() {
         //协议只支持我方和对方，这里假定我方是黑棋
         Color aiColor = Color.BLACK;
-        while (true) {
-            byte buffer[] = new byte[1024];
-            int count = System.in.read(buffer);
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < count; i++) {
-                if (buffer[i] > 0 && buffer[i] != '\n') {
-                    builder.append((char) buffer[i]);
+        boolean done = false;
+        while (!done) {
+            while (messageBuffer.size() > 0) {
+                String pointsInfo = messageBuffer.getFirst().trim();
+                messageBuffer.removeFirst();
+                if (pointsInfo.equals("DONE")) {
+                    done = true;
+                    break;
                 }
+                String[] numbers = pointsInfo.split(",");
+                int x = convertStringToInt(numbers[0]);
+                int y = convertStringToInt(numbers[1]);
+                int colorCode = convertStringToInt(numbers[2]);
+                //不保存节点，不需要做处理
             }
-            String input = builder.toString().trim();
-            if (input.equals("DONE")) {
-                break;
-            }
-
-            String[] numbers = input.split(",");
-            int x = convertStringToInt(numbers[0]);
-            int y = convertStringToInt(numbers[1]);
-            int colorCode = convertStringToInt(numbers[2]);
-            //协议的1是我方，这里假定我方是黑棋
-            Color color = colorCode == 1 ? Color.BLACK : Color.WHITE;
-            map[x][y] = color;
         }
 
-        GomokuPlayer player = new GomokuPlayer(map, Level.VERY_HIGH);
-        Result result = player.play(aiColor);
-        printPoint(result.getPoint());
-        setPoint(result.getPoint(), Color.BLACK);
+        //重新开局
+//        pointsCount = 0;
+//        Color[][] map = MapDriver.getEmptyMap();
+//        GomokuPlayer player = new GomokuPlayer(map, Level.VERY_HIGH);
+//        long time = player.getThinkTime(matchLimit, moveLimit, pointsCount);
+//        sendDebugToPiskvork("think time " + time);
+//        Result result = player.playGomokuCup(aiColor, time);
+//        setPoint(result.getPoint(), aiColor);
+//        printPoint(result.getPoint());
     }
 
     private static void commandAbout() {

@@ -23,13 +23,13 @@ class Cache {
     }
 
     void recordComboResult(boolean value) {
-        if (config.cacheSize > 0) {
+        if (Config.cacheSize > 0) {
             cacheCombo.put(gameMap.getHashCode(), value);
         }
     }
 
     Boolean getComboResult() {
-        if (config.cacheSize > 0) {
+        if (Config.cacheSize > 0) {
             if (cacheCombo.containsKey(gameMap.getHashCode())) {
                 counter.comboCacheHit++;
                 return cacheCombo.get(gameMap.getHashCode());
@@ -44,7 +44,7 @@ class Cache {
 
     class QueueMap<K, V> extends LinkedHashMap<K, V> {
         protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > config.cacheSize;
+            return size() > Config.cacheSize;
         }
     }
 }
