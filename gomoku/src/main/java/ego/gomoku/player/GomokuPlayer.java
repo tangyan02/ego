@@ -29,8 +29,8 @@ public class GomokuPlayer {
             config.comboTimeOut = 5 * 1000;
         }
         if (level == Level.VERY_HIGH) {
-            config.comboDeep = 100;
-            config.searchDeep = 100;
+            config.comboDeep = 50;
+            config.searchDeep = 10;
             config.searchTimeOut = 20 * 1000;
             config.comboTimeOut = 10 * 1000;
         }
@@ -49,6 +49,24 @@ public class GomokuPlayer {
     public Result randomBegin(Color color) {
         Result result = game.search(color, true);
         return result;
+    }
+
+    public Result playGomokuCup(Color color, long time) {
+        config.comboTimeOut = time / 3;
+        config.searchTimeOut = time / 3 * 2;
+        Result result = game.search(color, false);
+        return result;
+    }
+
+    public long getThinkTime(long matchTimeLeft, long moveTimeLimit, int pointsCount) {
+        long time = matchTimeLeft / 10;
+        if (pointsCount < 40) {
+            long maxTime = matchTimeLeft / (40 - pointsCount);
+            time = Math.min(maxTime, time);
+        }
+        time = Math.min(moveTimeLimit, time);
+        time -= 500;
+        return time;
     }
 
 }

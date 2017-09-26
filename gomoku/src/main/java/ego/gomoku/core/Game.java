@@ -38,9 +38,7 @@ public class Game {
     }
 
     public Result search(Color color, boolean randomBegin) {
-        //减少一秒的停止预估
         timeOut = false;
-        config.searchTimeOut -= 1000;
 
         Result result = new Result();
         Cache cache = new Cache(config, gameMap, counter);
@@ -75,7 +73,7 @@ public class Game {
         int comboLevel = config.comboDeep;
 
         //连击的限时迭代，并预留一秒
-        startTime = System.currentTimeMillis() - 1000;
+        startTime = System.currentTimeMillis();
         boolean otherWin = false;
 
         for (int i = 1; i <= comboLevel; i += 4) {
@@ -104,7 +102,9 @@ public class Game {
                 otherWin = true;
             }
             if (comboResult.timeOut) {
-                System.out.println("combo time out");
+                if (Config.debug) {
+                    System.out.println("combo time out");
+                }
                 break;
             }
             if (Config.debug) {
@@ -121,11 +121,11 @@ public class Game {
             losePoints.clear();
         }
         //限时迭代，并预留一秒
-        startTime = System.currentTimeMillis() - 1000;
+        startTime = System.currentTimeMillis();
         //逐个计算，并记录
         counter.allStep = points.size();
 
-        for (int level = 4; level <= config.searchDeep; level += 2) {
+        for (int level = 2; level <= config.searchDeep; level += 2) {
             int extreme = Integer.MIN_VALUE;
             Result currentResult = new Result();
             //把低层的最优解放到第一个处理
@@ -174,7 +174,7 @@ public class Game {
                 result = currentResult;
             }
             //如果已经用掉不少的时间，则停止
-            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 3) {
+            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 4) {
                 break;
             }
         }
