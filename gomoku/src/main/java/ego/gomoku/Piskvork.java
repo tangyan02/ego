@@ -167,6 +167,8 @@ public class Piskvork {
 
     private static void commandBoard() {
         //协议只支持我方和对方，这里假定我方是黑棋
+        map = MapDriver.getEmptyMap();
+        pointsCount = 0;
         Color aiColor = Color.BLACK;
         boolean done = false;
         while (!done) {
@@ -181,19 +183,37 @@ public class Piskvork {
                 int x = convertStringToInt(numbers[0]);
                 int y = convertStringToInt(numbers[1]);
                 int colorCode = convertStringToInt(numbers[2]);
-                //不保存节点，不需要做处理
+                sendDebugToPiskvork(String.format("get point %s,%s %s", x, y, colorCode));
+                Color color = colorCode == 1 ? aiColor : aiColor.getOtherColor();
+                setPoint(new Point(x, y), color);
             }
         }
 
-        //重新开局
-//        pointsCount = 0;
-//        Color[][] map = MapDriver.getEmptyMap();
-//        GomokuPlayer player = new GomokuPlayer(map, Level.VERY_HIGH);
-//        long time = player.getThinkTime(matchLimit, moveLimit, pointsCount);
-//        sendDebugToPiskvork("think time " + time);
-//        Result result = player.playGomokuCup(aiColor, time);
-//        setPoint(result.getPoint(), aiColor);
-//        printPoint(result.getPoint());
+        //输出加载的棋盘
+        for (int i = 0; i < map.length; i++) {
+            StringBuilder text = new StringBuilder();
+            for (int j = 0; j < map.length; j++) {
+                switch (map[i][j]) {
+                    case NULL:
+                        text.append(".");
+                        break;
+                    case BLACK:
+                        text.append("x");
+                        break;
+                    case WHITE:
+                        text.append("o");
+                        break;
+                }
+            }
+            sendDebugToPiskvork(text.toString());
+        }
+
+        GomokuPlayer player = new GomokuPlayer(map, Level.VERY_HIGH);
+        long time = player.getThinkTime(matchLimit, moveLimit, pointsCount);
+        sendDebugToPiskvork("think time " + time);
+        Result result = player.playGomokuCup(aiColor, time);
+        setPoint(result.getPoint(), aiColor);
+        printPoint(result.getPoint());
     }
 
     private static void commandAbout() {

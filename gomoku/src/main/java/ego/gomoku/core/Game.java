@@ -174,7 +174,7 @@ public class Game {
                 result = currentResult;
             }
             //如果已经用掉不少的时间，则停止
-            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 4) {
+            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 5) {
                 break;
             }
         }

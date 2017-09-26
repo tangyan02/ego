@@ -65,7 +65,7 @@ public class GomokuPlayer {
             time = Math.min(maxTime, time);
         }
         time = Math.min(moveTimeLimit, time);
-        time -= 300;
+        time -= 100;
         return time;
     }
 
