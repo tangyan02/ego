@@ -140,6 +140,7 @@ public class Piskvork {
 
     private static void commandRestart(String param) {
         pointsCount = 0;
+        map = MapDriver.getEmptyMap();
         sendCommandToPiskvork("OK");
     }
 
@@ -248,14 +249,14 @@ public class Piskvork {
     }
 
     private static void sendMessageToPiskvork(String message) {
-        System.out.println("Message ego: " + message);
+        System.out.println("Message " + message);
     }
 
     private static void sendDebugToPiskvork(String message) {
-        System.out.println("Debug ego: " + message);
+        System.out.println("Debug " + message);
     }
 
     private static void sendErrorToPiskvork(String message) {
-        System.out.println("Error ego: " + message);
+        System.out.println("Error " + message);
     }
 }
