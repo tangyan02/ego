@@ -61,8 +61,9 @@ public class Game {
             }
         }
 
-        //只有一个扩展点的情形直接返回
+        //分析初始棋盘
         Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score, counter);
+        //只有一个扩展点的情形直接返回
         List<Point> points = LevelProcessor.getExpandPoints(data);
         if (points.size() == 1) {
             result.add(points.get(0), 0);
