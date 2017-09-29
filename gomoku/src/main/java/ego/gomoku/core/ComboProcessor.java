@@ -51,8 +51,10 @@ public class ComboProcessor {
         dfsKill(gameMap, targetColor, targetColor,
                 level, score, ComboTye.FOUR,
                 null, null, null);
-        if (result.point != null)
+        if (result.point != null) {
+            result.fourWin = true;
             return result;
+        }
 
         //计算对手四连杀
         result.point = null;
@@ -62,6 +64,7 @@ public class ComboProcessor {
                 null, null, null);
         if (result.point != null) {
             result.point = null;
+            result.fourWin = true;
             return result;
         }
 
@@ -71,6 +74,7 @@ public class ComboProcessor {
         dfsKill(gameMap, targetColor, targetColor,
                 level, score, ComboTye.THREE,
                 null, null, null);
+        result.fourWin = false;
         return result;
     }
 

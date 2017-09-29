@@ -71,6 +71,8 @@ public class Game {
         }
         //算杀
         Set<Point> losePoints = new HashSet<>();
+        //三连胜利的记录，三连胜利不能过早判断，否则会少计算后面对方的四连
+        Set<Point> threeWins = new HashSet<>();
         int comboLevel = config.comboDeep;
 
         //连击的限时迭代，并预留一秒
@@ -82,8 +84,12 @@ public class Game {
             ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
             Point winTry = comboResult.point;
             if (winTry != null) {
-                result.add(winTry, Integer.MAX_VALUE);
-                return result;
+                if (comboResult.fourWin) {
+                    result.add(winTry, Integer.MAX_VALUE);
+                    return result;
+                } else {
+                    threeWins.add(winTry);
+                }
             }
             //对方连击
             for (Point point : points) {
@@ -116,6 +122,11 @@ public class Game {
                 System.out.println();
             }
             result.setComboLevel(i);
+        }
+        threeWins.removeAll(losePoints);
+        if (threeWins.size() > 0) {
+            result.add(threeWins.iterator().next(), Integer.MAX_VALUE);
+            return result;
         }
 
         //如果已经输了，则朴素搜索

@@ -6,4 +6,6 @@ public class ComboResult {
 
     public boolean timeOut = false;
 
+    public boolean fourWin = false;
+
 }

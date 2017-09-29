@@ -52,21 +52,6 @@ class LevelProcessor {
             });
             return new ArrayList<>(result);
         }
-        //如果对手有双三进攻点
-        if (!data.getDoubleThreeOpenDefense().isEmpty()) {
-            Point deadPoint = data.getDoubleThreeOpenDefense().iterator().next();
-            Set<Point> linePoints = gameMap.getPointLinesNeighbor(deadPoint);
-            Set<Point> result = new HashSet<>();
-            result.add(deadPoint);
-            result.addAll(data.getFourAttack());
-            result.addAll(data.getThreeOpenAttack());
-            data.getThreeOpenDefence().forEach((k, v) -> {
-                if (linePoints.contains(k)) {
-                    result.add(k);
-                }
-            });
-            return new ArrayList<>(result);
-        }
         //如果对手有三四进攻点
         if (!data.getFourCloseAndOpenThreeDefense().isEmpty()) {
             Point deadPoint = data.getFourCloseAndOpenThreeDefense().iterator().next();
@@ -80,6 +65,21 @@ class LevelProcessor {
                 }
             });
             data.getFourCloseDefence().forEach((k, v) -> {
+                if (linePoints.contains(k)) {
+                    result.add(k);
+                }
+            });
+            return new ArrayList<>(result);
+        }
+        //如果对手有双三进攻点
+        if (!data.getDoubleThreeOpenDefense().isEmpty()) {
+            Point deadPoint = data.getDoubleThreeOpenDefense().iterator().next();
+            Set<Point> linePoints = gameMap.getPointLinesNeighbor(deadPoint);
+            Set<Point> result = new HashSet<>();
+            result.add(deadPoint);
+            result.addAll(data.getFourAttack());
+            result.addAll(data.getThreeOpenAttack());
+            data.getThreeOpenDefence().forEach((k, v) -> {
                 if (linePoints.contains(k)) {
                     result.add(k);
                 }
@@ -102,10 +102,11 @@ class LevelProcessor {
 
     public static void main(String[] args) {
         //        GameMap gameMap = new GameMap(MapDriver.readMap("cases/blackCombo.txt"));
-        GameMap gameMap = new GameMap(MapDriver.readMap("cases/expand.txt"));
+//        GameMap gameMap = new GameMap(MapDriver.readMap("cases/expand.txt"));
+        GameMap gameMap = new GameMap(MapDriver.readMap());
         Score score = new Score();
         score.init(gameMap, Color.BLACK);
-        Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score, false);
+        Analyzer analyzer = new Analyzer(gameMap, Color.BLACK, gameMap.getNeighbor(), score, false);
         List<Point> points = getExpandPoints(analyzer, gameMap);
         ConsolePrinter.printMapWithPoints(gameMap, points);
         System.out.println(points);

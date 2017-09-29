@@ -37,6 +37,12 @@ public class MapDriver {
                         case '●':
                             map[i][j] = Color.WHITE;
                             break;
+                        case 'x':
+                            map[i][j] = Color.BLACK;
+                            break;
+                        case 'o':
+                            map[i][j] = Color.WHITE;
+                            break;
                     }
                 }
             }

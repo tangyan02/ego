@@ -120,6 +120,24 @@ public class Analyzer {
                         if (GameMap.reachable(headX, headY)) {
                             Color headColor = gameMap.getColor(headX, headY);
                             Color tailColor = gameMap.getColor(x, y);
+                            if (headColor == Color.NULL && tailColor == Color.NULL) {
+                                int sideX = x + directX[i];
+                                int sideY = y + directY[i];
+                                if (GameMap.reachable(sideX, sideY)) {
+                                    Color sideColor = gameMap.getColor(sideX, sideY);
+                                    if (sideColor == Color.NULL) {
+                                        threeOpenAttack.add(point);
+                                    }
+                                }
+                                sideX = headX - directX[i];
+                                sideY = headY - directY[i];
+                                if (GameMap.reachable(sideX, sideY)) {
+                                    Color sideColor = gameMap.getColor(sideX, sideY);
+                                    if (sideColor == Color.NULL) {
+                                        threeOpenAttack.add(point);
+                                    }
+                                }
+                            }
                             if (headColor == Color.NULL && tailColor != Color.NULL) {
                                 int sideX = x + directX[i];
                                 int sideY = y + directY[i];
@@ -216,6 +234,48 @@ public class Analyzer {
                             if (GameMap.reachable(headX, headY)) {
                                 Color headColor = gameMap.getColor(headX, headY);
                                 Color tailColor = gameMap.getColor(x, y);
+                                if (headColor == Color.NULL && tailColor == Color.NULL) {
+                                    int sideX = x + directX[i];
+                                    int sideY = y + directY[i];
+                                    if (GameMap.reachable(sideX, sideY)) {
+                                        Color sideColor = gameMap.getColor(sideX, sideY);
+                                        if (sideColor == Color.NULL) {
+                                            //双三
+                                            if (threeOpenDefence.containsKey(point)) {
+                                                if (threeOpenDefence.get(point) != i) {
+                                                    doubleThreeOpenDefense.add(point);
+                                                }
+                                            }
+                                            //四三
+                                            if (fourCloseDefence.containsKey(point)) {
+                                                if (fourCloseDefence.get(point) != i) {
+                                                    fourCloseAndOpenThreeDefense.add(point);
+                                                }
+                                            }
+                                            threeOpenDefence.put(point, i);
+                                        }
+                                    }
+                                    sideX = headX - directX[i];
+                                    sideY = headY - directY[i];
+                                    if (GameMap.reachable(sideX, sideY)) {
+                                        Color sideColor = gameMap.getColor(sideX, sideY);
+                                        if (sideColor == Color.NULL) {
+                                            //双三
+                                            if (threeOpenDefence.containsKey(point)) {
+                                                if (threeOpenDefence.get(point) != i) {
+                                                    doubleThreeOpenDefense.add(point);
+                                                }
+                                            }
+                                            //四三
+                                            if (fourCloseDefence.containsKey(point)) {
+                                                if (fourCloseDefence.get(point) != i) {
+                                                    fourCloseAndOpenThreeDefense.add(point);
+                                                }
+                                            }
+                                            threeOpenDefence.put(point, i);
+                                        }
+                                    }
+                                }
                                 if (headColor == Color.NULL && tailColor != Color.NULL) {
                                     int sideX = x + directX[i];
                                     int sideY = y + directY[i];
@@ -229,7 +289,7 @@ public class Analyzer {
                                                 }
                                             }
                                             //四三
-                                            if(fourCloseDefence.containsKey(point)){
+                                            if (fourCloseDefence.containsKey(point)) {
                                                 if (fourCloseDefence.get(point) != i) {
                                                     fourCloseAndOpenThreeDefense.add(point);
                                                 }
@@ -251,7 +311,7 @@ public class Analyzer {
                                                 }
                                             }
                                             //四三
-                                            if(fourCloseDefence.containsKey(point)){
+                                            if (fourCloseDefence.containsKey(point)) {
                                                 if (fourCloseDefence.get(point) != i) {
                                                     fourCloseAndOpenThreeDefense.add(point);
                                                 }
@@ -324,11 +384,13 @@ public class Analyzer {
 
     public static void main(String[] args) {
 //        GameMap gameMap = new GameMap(MapDriver.readMap("cases/blackCombo.txt"));
-        GameMap gameMap = new GameMap(MapDriver.readMap("cases/analyze.txt"));
+//        GameMap gameMap = new GameMap(MapDriver.readMap("cases/analyze.txt"));
+        GameMap gameMap = new GameMap(MapDriver.readMap());
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
         score.init(gameMap, Color.BLACK);
-        Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score, false);
+        Analyzer analyzer = new Analyzer(gameMap, Color.BLACK, gameMap.getNeighbor(), score, false);
+        ConsolePrinter.printMapWithPoints(gameMap, analyzer.getFourCloseAndOpenThreeDefense());
 
         System.out.println("FIVE A");
         System.out.println(analyzer.getFiveAttack());
