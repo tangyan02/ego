@@ -1,7 +1,5 @@
 package ego.gomoku.core;
 
-import ego.gomoku.entity.Counter;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -11,15 +9,12 @@ class Cache {
 
     GameMap gameMap;
 
-    Counter counter;
-
     private QueueMap<Long, Boolean> cacheCombo = new QueueMap<>();
 
 
     Cache(Config config, GameMap gameMap) {
         this.config = config;
         this.gameMap = gameMap;
-        this.counter = counter;
     }
 
     void recordComboResult(boolean value) {
