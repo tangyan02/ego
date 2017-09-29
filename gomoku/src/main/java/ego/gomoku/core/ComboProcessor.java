@@ -20,8 +20,6 @@ public class ComboProcessor {
 
     private Score score;
 
-    private Counter counter;
-
     private Cache cache;
 
     private ComboResult result;
@@ -35,11 +33,13 @@ public class ComboProcessor {
     public void init(GameMap gameMap, Score score, Counter counter, Cache cache) {
         this.gameMap = gameMap;
         this.score = score;
-        this.counter = counter;
         this.cache = cache;
     }
 
     ComboResult canKill(Color targetColor, int level, long startTime, long limitTime) {
+        if (level % 2 == 1) {
+            level--;
+        }
         this.startTime = startTime;
         this.limitTime = limitTime;
         currentLevel = level;

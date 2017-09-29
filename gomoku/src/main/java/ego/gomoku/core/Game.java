@@ -77,7 +77,7 @@ public class Game {
         startTime = System.currentTimeMillis();
         boolean otherWin = false;
 
-        for (int i = 1; i <= comboLevel; i += 2) {
+        for (int i = 1; i <= comboLevel; i += 3) {
             //我方直接的连击
             ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
             Point winTry = comboResult.point;
@@ -127,7 +127,7 @@ public class Game {
         //逐个计算，并记录
         counter.allStep = points.size();
 
-        for (int level = 1; level <= config.searchDeep; level += 1) {
+        for (int level = 2; level <= config.searchDeep; level += 2) {
             int extreme = Integer.MIN_VALUE;
             Result currentResult = new Result();
             //把低层的最优解放到第一个处理
