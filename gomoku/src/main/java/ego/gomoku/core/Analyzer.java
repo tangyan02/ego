@@ -1,16 +1,15 @@
 package ego.gomoku.core;
 
-import ego.gomoku.entity.Counter;
 import ego.gomoku.entity.Point;
 import ego.gomoku.enumeration.Color;
 import ego.gomoku.helper.ConsolePrinter;
 import ego.gomoku.helper.MapDriver;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Analyzer {
+
+    private boolean basic = false;
 
     private GameMap gameMap;
 
@@ -38,11 +37,24 @@ public class Analyzer {
 
     private Set<Point> notKey;
 
-    Analyzer(GameMap gameMap, Color color, List<Point> points, Score score) {
+    //更复杂的分析
+
+    private Map<Point, Integer> fourCloseDefence;
+
+    private Set<Point> doubleFourCloseDefence;
+
+    private Map<Point, Integer> threeOpenDefence;
+
+    private Set<Point> doubleThreeOpenDefense;
+
+    private Set<Point> fourCloseAndOpenThreeDefense;
+
+    Analyzer(GameMap gameMap, Color color, List<Point> points, Score score, boolean basic) {
         this.gameMap = gameMap;
         this.points = points;
         this.score = score;
         this.color = color;
+        this.basic = basic;
         getAttackAndDefence();
     }
 
@@ -52,28 +64,38 @@ public class Analyzer {
         threeOpenAttack = new HashSet<>();
         fourDefence = new HashSet<>();
         threeDefence = new HashSet<>();
-        twoAttack = new HashSet<>();
-        notKey = new HashSet<>(points);
+
+        if (!basic) {
+            twoAttack = new HashSet<>();
+            notKey = new HashSet<>(points);
+            fourCloseDefence = new HashMap<>();
+            threeOpenDefence = new HashMap<>();
+            doubleThreeOpenDefense = new HashSet<>();
+            doubleFourCloseDefence = new HashSet<>();
+            fourCloseAndOpenThreeDefense = new HashSet<>();
+        }
 
         points.forEach(this::addAnalyze);
 
         removeRepeat();
     }
 
-    private void removeRepeat(){
+    private void removeRepeat() {
         threeOpenAttack.removeAll(fourAttack);
 
-        twoAttack.removeAll(fourAttack);
-        twoAttack.removeAll(fourDefence);
-        twoAttack.removeAll(threeOpenAttack);
-        twoAttack.removeAll(threeDefence);
+        if (!basic) {
+            twoAttack.removeAll(fourAttack);
+            twoAttack.removeAll(fourDefence);
+            twoAttack.removeAll(threeOpenAttack);
+            twoAttack.removeAll(threeDefence);
 
-        notKey.removeAll(fiveAttack);
-        notKey.removeAll(fourAttack);
-        notKey.removeAll(fourDefence);
-        notKey.removeAll(threeDefence);
-        notKey.removeAll(threeOpenAttack);
-        notKey.removeAll(twoAttack);
+            notKey.removeAll(fiveAttack);
+            notKey.removeAll(fourAttack);
+            notKey.removeAll(fourDefence);
+            notKey.removeAll(threeDefence);
+            notKey.removeAll(threeOpenAttack);
+            notKey.removeAll(twoAttack);
+        }
     }
 
     private void addAnalyze(Point point) {
@@ -167,8 +189,81 @@ public class Analyzer {
                         }
                     }
                 }
-                if (score.getColorCount(otherColor)[x][y][i] == 0 && score.getColorCount(color)[x][y][i] == 1) {
-                    twoAttack.add(point);
+                //更多的分析
+                if (!basic) {
+                    if (score.getColorCount(otherColor)[x][y][i] == 0 && score.getColorCount(color)[x][y][i] == 1) {
+                        twoAttack.add(point);
+                    }
+                    if (score.getColorCount(otherColor)[x][y][i] == 3 && score.getColorCount(color)[x][y][i] == 0) {
+                        //双四
+                        if (fourCloseDefence.containsKey(point)) {
+                            if (fourCloseDefence.get(point) != i) {
+                                doubleFourCloseDefence.add(point);
+                            }
+                        }
+                        //三四
+                        if (threeOpenDefence.containsKey(point)) {
+                            if (threeOpenDefence.get(point) != i) {
+                                fourCloseAndOpenThreeDefense.add(point);
+                            }
+                        }
+                        fourCloseDefence.put(point, i);
+                    }
+                    if (score.getColorCount(otherColor)[x][y][i] == 2 && score.getColorCount(color)[x][y][i] == 0) {
+                        int headX = x - directX[i] * 4;
+                        int headY = y - directY[i] * 4;
+                        if (k != 0 && k != 4) {
+                            if (GameMap.reachable(headX, headY)) {
+                                Color headColor = gameMap.getColor(headX, headY);
+                                Color tailColor = gameMap.getColor(x, y);
+                                if (headColor == Color.NULL && tailColor != Color.NULL) {
+                                    int sideX = x + directX[i];
+                                    int sideY = y + directY[i];
+                                    if (GameMap.reachable(sideX, sideY)) {
+                                        Color sideColor = gameMap.getColor(sideX, sideY);
+                                        if (sideColor == Color.NULL) {
+                                            //双三
+                                            if (threeOpenDefence.containsKey(point)) {
+                                                if (threeOpenDefence.get(point) != i) {
+                                                    doubleThreeOpenDefense.add(point);
+                                                }
+                                            }
+                                            //四三
+                                            if(fourCloseDefence.containsKey(point)){
+                                                if (fourCloseDefence.get(point) != i) {
+                                                    fourCloseAndOpenThreeDefense.add(point);
+                                                }
+                                            }
+                                            threeOpenDefence.put(point, i);
+                                        }
+                                    }
+                                }
+                                if (headColor != Color.NULL && tailColor == Color.NULL) {
+                                    int sideX = headX - directX[i];
+                                    int sideY = headY - directY[i];
+                                    if (GameMap.reachable(sideX, sideY)) {
+                                        Color sideColor = gameMap.getColor(sideX, sideY);
+                                        if (sideColor == Color.NULL) {
+                                            //双三
+                                            if (threeOpenDefence.containsKey(point)) {
+                                                if (threeOpenDefence.get(point) != i) {
+                                                    doubleThreeOpenDefense.add(point);
+                                                }
+                                            }
+                                            //四三
+                                            if(fourCloseDefence.containsKey(point)){
+                                                if (fourCloseDefence.get(point) != i) {
+                                                    fourCloseAndOpenThreeDefense.add(point);
+                                                }
+                                            }
+                                            threeOpenDefence.put(point, i);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
                 x += directX[i];
                 y += directY[i];
@@ -207,13 +302,33 @@ public class Analyzer {
         return notKey;
     }
 
+    public Map<Point, Integer> getFourCloseDefence() {
+        return fourCloseDefence;
+    }
+
+    public Set<Point> getDoubleFourCloseDefence() {
+        return doubleFourCloseDefence;
+    }
+
+    public Map<Point, Integer> getThreeOpenDefence() {
+        return threeOpenDefence;
+    }
+
+    public Set<Point> getDoubleThreeOpenDefense() {
+        return doubleThreeOpenDefense;
+    }
+
+    public Set<Point> getFourCloseAndOpenThreeDefense() {
+        return fourCloseAndOpenThreeDefense;
+    }
+
     public static void main(String[] args) {
 //        GameMap gameMap = new GameMap(MapDriver.readMap("cases/blackCombo.txt"));
-        GameMap gameMap = new GameMap(MapDriver.readMap());
+        GameMap gameMap = new GameMap(MapDriver.readMap("cases/analyze.txt"));
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
         score.init(gameMap, Color.BLACK);
-        Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score);
+        Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score, false);
 
         System.out.println("FIVE A");
         System.out.println(analyzer.getFiveAttack());
@@ -235,5 +350,20 @@ public class Analyzer {
 
         System.out.println("OTHER");
         System.out.println(analyzer.getNotKey());
+
+        System.out.println("C FOUR D");
+        System.out.println(analyzer.getFourCloseDefence());
+
+        System.out.println("2C FOUR D");
+        System.out.println(analyzer.getDoubleFourCloseDefence());
+
+        System.out.println("C THREE D");
+        System.out.println(analyzer.getThreeOpenDefence());
+
+        System.out.println("2C THREE D");
+        System.out.println(analyzer.getDoubleThreeOpenDefense());
+
+        System.out.println("C THREE D and C FOUR D");
+        System.out.println(analyzer.getFourCloseAndOpenThreeDefense());
     }
 }

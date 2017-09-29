@@ -62,7 +62,7 @@ public class Game {
         }
 
         //分析初始棋盘
-        Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score);
+        Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score, false);
         //只有一个扩展点的情形直接返回
         List<Point> points = LevelProcessor.getExpandPoints(data);
         if (points.size() == 1) {
@@ -203,7 +203,7 @@ public class Game {
             return getScore();
         }
         //计算扩展节点
-        Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score);
+        Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score, false);
         //输赢判定
         if (!data.getFiveAttack().isEmpty()) {
             if (color == aiColor) {

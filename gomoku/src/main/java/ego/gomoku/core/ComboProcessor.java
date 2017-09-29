@@ -105,7 +105,7 @@ public class ComboProcessor {
             rangePoints = new ArrayList<>(rangeSet);
         }
         //分析选取的点
-        Analyzer data = new Analyzer(gameMap, color, rangePoints, score);
+        Analyzer data = new Analyzer(gameMap, color, rangePoints, score, false);
         //如果对面形成活三，则转换会冲四
         if (comboTye == ComboTye.THREE) {
             if (color == targetColor && !data.getThreeDefence().isEmpty()) {
