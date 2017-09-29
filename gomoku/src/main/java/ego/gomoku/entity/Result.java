@@ -1,7 +1,5 @@
 package ego.gomoku.entity;
 
-import ego.gomoku.entity.Point;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
