@@ -77,7 +77,7 @@ public class Game {
         startTime = System.currentTimeMillis();
         boolean otherWin = false;
 
-        for (int i = 1; i <= comboLevel; i += 4) {
+        for (int i = 1; i <= comboLevel; i += 2) {
             //我方直接的连击
             ComboResult comboResult = comboProcessor.canKill(color, i, startTime, config.comboTimeOut);
             Point winTry = comboResult.point;
@@ -182,7 +182,7 @@ public class Game {
                 break;
             }
             //如果已经用掉不少的时间，则停止
-            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 5) {
+            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 3) {
                 break;
             }
         }
