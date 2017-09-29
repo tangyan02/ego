@@ -174,6 +174,10 @@ public class Game {
             if (!timeOut) {
                 result = currentResult;
             }
+            //如果只有一个点能下，则停止
+            if (losePoints.size() == points.size() - 1) {
+                break;
+            }
             //如果已经用掉不少的时间，则停止
             if (System.currentTimeMillis() - startTime > config.searchTimeOut / 5) {
                 break;
