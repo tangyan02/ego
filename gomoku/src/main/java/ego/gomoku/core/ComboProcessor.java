@@ -119,7 +119,7 @@ public class ComboProcessor {
             List<Point> points = getComboAttackPoints(data, comboTye);
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                Set<Point> newNextRange = gameMap.getPointLineNeighbor(point);
+                Set<Point> newNextRange = gameMap.getPointLinesNeighbor(point);
                 boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (level == currentLevel && value) {
                     result.point = point;
@@ -142,7 +142,7 @@ public class ComboProcessor {
             }
             for (Point point : points) {
                 setColor(point, color, Color.NULL, targetColor, score, gameMap);
-                Set<Point> newNextRange = gameMap.getPointLineNeighbor(point);
+                Set<Point> newNextRange = gameMap.getPointLinesNeighbor(point);
                 boolean value = dfsKill(gameMap, color.getOtherColor(), targetColor, level - 1, score, comboTye, newNextRange, nextRange, point);
                 if (!value) {
                     setColor(point, Color.NULL, color, targetColor, score, gameMap);

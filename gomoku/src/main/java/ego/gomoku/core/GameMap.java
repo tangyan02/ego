@@ -138,7 +138,7 @@ public class GameMap {
         return new ArrayList<>(neighbor);
     }
 
-    Set<Point> getPointLineNeighbor(Point point) {
+    Set<Point> getPointLinesNeighbor(Point point) {
         Set<Point> result = new HashSet<>();
         for (int i = 0; i < 8; i++) {
             int x = point.getX();
@@ -188,7 +188,7 @@ public class GameMap {
         assert hashCode == hashCode2;
         gameMap.getNeighbor();
 
-        Set<Point> linePoints = gameMap.getPointLineNeighbor(new Point(9, 6));
+        Set<Point> linePoints = gameMap.getPointLinesNeighbor(new Point(9, 6));
         assert linePoints.size() > 0;
 
     }

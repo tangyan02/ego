@@ -64,7 +64,7 @@ public class Game {
         //分析初始棋盘
         Analyzer data = new Analyzer(gameMap, color, gameMap.getNeighbor(), score, false);
         //只有一个扩展点的情形直接返回
-        List<Point> points = LevelProcessor.getExpandPoints(data);
+        List<Point> points = LevelProcessor.getExpandPoints(data, gameMap);
         if (points.size() == 1) {
             result.add(points.get(0), 0);
             return result;
@@ -213,7 +213,7 @@ public class Game {
                 return Integer.MIN_VALUE;
             }
         }
-        List<Point> points = LevelProcessor.getExpandPoints(data);
+        List<Point> points = LevelProcessor.getExpandPoints(data, gameMap);
         //遍历扩展节点
         int extreme = color == aiColor ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         for (Point point : points) {
