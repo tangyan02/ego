@@ -16,7 +16,7 @@ class Cache {
     private QueueMap<Long, Boolean> cacheCombo = new QueueMap<>();
 
 
-    Cache(Config config, GameMap gameMap, Counter counter) {
+    Cache(Config config, GameMap gameMap) {
         this.config = config;
         this.gameMap = gameMap;
         this.counter = counter;
@@ -31,7 +31,6 @@ class Cache {
     Boolean getComboResult() {
         if (Config.cacheSize > 0) {
             if (cacheCombo.containsKey(gameMap.getHashCode())) {
-                counter.comboCacheHit++;
                 return cacheCombo.get(gameMap.getHashCode());
             }
         }

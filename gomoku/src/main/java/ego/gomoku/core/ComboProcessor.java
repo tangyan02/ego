@@ -89,7 +89,6 @@ public class ComboProcessor {
         }
 
         if (level == 0) {
-            counter.countCombo++;
             return returnValue(false);
         }
         //选取邻近的点计算连击
@@ -106,7 +105,7 @@ public class ComboProcessor {
             rangePoints = new ArrayList<>(rangeSet);
         }
         //分析选取的点
-        Analyzer data = new Analyzer(gameMap, color, rangePoints, score, counter);
+        Analyzer data = new Analyzer(gameMap, color, rangePoints, score);
         //如果对面形成活三，则转换会冲四
         if (comboTye == ComboTye.THREE) {
             if (color == targetColor && !data.getThreeDefence().isEmpty()) {
@@ -115,7 +114,6 @@ public class ComboProcessor {
         }
         if (color == targetColor) {
             if (data.getFiveAttack().size() > 0) {
-                counter.countCombo++;
                 return returnValue(true);
             }
             List<Point> points = getComboAttackPoints(data, comboTye);
@@ -211,7 +209,7 @@ public class ComboProcessor {
         Config config = new Config();
         config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
-        comboProcessor.init(gameMap, score, new Counter(), new Cache(config, gameMap, new Counter()));
+        comboProcessor.init(gameMap, score, new Counter(), new Cache(config, gameMap));
         System.out.println(comboProcessor.canKill(color, 15, System.currentTimeMillis(), config.comboTimeOut).point);
         System.out.println(System.currentTimeMillis() - time + "ms");
     }

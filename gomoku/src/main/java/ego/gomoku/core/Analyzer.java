@@ -38,14 +38,12 @@ public class Analyzer {
 
     private Set<Point> notKey;
 
-    Analyzer(GameMap gameMap, Color color, List<Point> points, Score score, Counter counter) {
-        long time = System.currentTimeMillis();
+    Analyzer(GameMap gameMap, Color color, List<Point> points, Score score) {
         this.gameMap = gameMap;
         this.points = points;
         this.score = score;
         this.color = color;
         getAttackAndDefence();
-        counter.analyzeTime += System.currentTimeMillis() - time;
     }
 
     private void getAttackAndDefence() {
@@ -215,7 +213,7 @@ public class Analyzer {
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
         score.init(gameMap, Color.BLACK);
-        Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score, new Counter());
+        Analyzer analyzer = new Analyzer(gameMap, Color.WHITE, gameMap.getNeighbor(), score);
 
         System.out.println("FIVE A");
         System.out.println(analyzer.getFiveAttack());

@@ -1,7 +1,5 @@
 # EGO AI 引擎合集
 
-详细日志见 [WIKI](https://github.com/tangyan02/ego/wiki)
-
 # 简要
 
 ## 五子棋 v4.6.0
