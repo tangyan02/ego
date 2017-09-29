@@ -1,4 +1,4 @@
-package ego.gomoku.core;
+package ego.gomoku.entity;
 
 import ego.gomoku.entity.Point;
 

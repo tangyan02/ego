@@ -1,13 +1,13 @@
 package ego.gomoku.core;
 
+import ego.gomoku.entity.ComboResult;
 import ego.gomoku.entity.Counter;
 import ego.gomoku.entity.Point;
+import ego.gomoku.entity.Result;
 import ego.gomoku.enumeration.Color;
-import ego.gomoku.exception.TimeOutException;
 import ego.gomoku.helper.ConsolePrinter;
 import ego.gomoku.helper.WinChecker;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,11 +126,11 @@ public class Game {
         //逐个计算，并记录
         counter.allStep = points.size();
 
-        for (int level = 2; level <= config.searchDeep; level += 2) {
+        for (int level = 1; level <= config.searchDeep; level += 1) {
             int extreme = Integer.MIN_VALUE;
             Result currentResult = new Result();
             //把低层的最优解放到第一个处理
-            if (result.point != null) {
+            if (result.getPoint() != null) {
                 points.remove(result.getPoint());
                 points.add(0, result.getPoint());
             }

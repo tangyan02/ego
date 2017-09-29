@@ -79,10 +79,10 @@ class Score {
     }
 
     private int getValueByCount(int blackCount, int whiteCount, Color color) {
-        int ONE = 2;
-        int TWO = 10;
-        int THREE = 20;
-        int FOUR = 45;
+        int ONE = 3;
+        int TWO = 20;
+        int THREE = 40;
+        int FOUR = 90;
         float weight = 1.0f;
 
         int valueWhite = 0;

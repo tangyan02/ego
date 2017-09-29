@@ -1,4 +1,4 @@
-package ego.gomoku.core;
+package ego.gomoku.entity;
 
 import ego.gomoku.entity.Point;
 
@@ -14,7 +14,7 @@ public class Result {
 
     int maxValue = Integer.MIN_VALUE;
 
-    void add(Point point, int value) {
+    public void add(Point point, int value) {
         if (value > maxValue) {
             maxValue = value;
             pointList.clear();

@@ -1,5 +1,6 @@
 package ego.gomoku.core;
 
+import ego.gomoku.entity.ComboResult;
 import ego.gomoku.entity.Counter;
 import ego.gomoku.entity.Point;
 import ego.gomoku.enumeration.Color;

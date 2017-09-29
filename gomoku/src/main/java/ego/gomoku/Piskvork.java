@@ -1,7 +1,7 @@
 package ego.gomoku;
 
 import ego.gomoku.core.Config;
-import ego.gomoku.core.Result;
+import ego.gomoku.entity.Result;
 import ego.gomoku.entity.Point;
 import ego.gomoku.enumeration.Color;
 import ego.gomoku.enumeration.Level;
