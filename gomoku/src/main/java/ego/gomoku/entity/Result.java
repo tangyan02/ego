@@ -12,6 +12,10 @@ public class Result {
 
     int maxValue = Integer.MIN_VALUE;
 
+    int comboLevel;
+
+    int searchLevel;
+
     public void add(Point point, int value) {
         if (value > maxValue) {
             maxValue = value;
@@ -37,5 +41,21 @@ public class Result {
 
     public List<Point> getPointList() {
         return pointList;
+    }
+
+    public int getComboLevel() {
+        return comboLevel;
+    }
+
+    public void setComboLevel(int comboLevel) {
+        this.comboLevel = comboLevel;
+    }
+
+    public int getSearchLevel() {
+        return searchLevel;
+    }
+
+    public void setSearchLevel(int searchLevel) {
+        this.searchLevel = searchLevel;
     }
 }

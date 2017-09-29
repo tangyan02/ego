@@ -154,16 +154,16 @@ public class Piskvork {
         sendDebugToPiskvork("think time " + time);
         Result result = player.playGomokuCup(Color.BLACK, time);
         setPoint(result.getPoint(), Color.BLACK);
-        printPoint(result.getPoint());
+        printResult(result);
     }
 
     private static void commandBegin() {
         pointsCount = 0;
         map = MapDriver.getEmptyMap();
         GomokuPlayer gomokuPlayer = new GomokuPlayer(map, Level.VERY_HIGH);
-        Point point = gomokuPlayer.play(Color.BLACK).getPoint();
-        setPoint(point, Color.BLACK);
-        printPoint(point);
+        Result result = gomokuPlayer.play(Color.BLACK);
+        setPoint(result.getPoint(), Color.BLACK);
+        printResult(result);
     }
 
     private static void commandBoard() {
@@ -214,7 +214,7 @@ public class Piskvork {
         sendDebugToPiskvork("think time " + time);
         Result result = player.playGomokuCup(aiColor, time);
         setPoint(result.getPoint(), aiColor);
-        printPoint(result.getPoint());
+        printResult(result);
     }
 
     private static void commandAbout() {
@@ -234,8 +234,16 @@ public class Piskvork {
         return result;
     }
 
-    private static void printPoint(Point point) {
-        sendCommandToPiskvork(String.format("%s,%s", point.getX(), point.getY()));
+    private static void printResult(Result result) {
+        sendDebugToPiskvork(String.format("(%s,%s) depth:%s combo:%s value:%s",
+                result.getPoint().getX(),
+                result.getPoint().getY(),
+                result.getSearchLevel(),
+                result.getComboLevel(),
+                result.getMaxValue()));
+        sendCommandToPiskvork(String.format("%s,%s",
+                result.getPoint().getX(),
+                result.getPoint().getY()));
     }
 
     private static void setPoint(Point point, Color color) {

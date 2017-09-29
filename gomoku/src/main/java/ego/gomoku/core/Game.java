@@ -115,6 +115,7 @@ public class Game {
                 }
                 System.out.println();
             }
+            result.setComboLevel(i);
         }
 
         //如果已经输了，则朴素搜索
@@ -172,6 +173,8 @@ public class Game {
                 }
             }
             if (!timeOut) {
+                currentResult.setComboLevel(result.getComboLevel());
+                currentResult.setSearchLevel(level);
                 result = currentResult;
             }
             //如果只有一个点能下，则停止
