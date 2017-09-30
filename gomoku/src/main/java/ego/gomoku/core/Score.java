@@ -82,7 +82,7 @@ class Score {
         int ONE = 4;
         int TWO = 20;
         int THREE = 40;
-        int FOUR = 100;
+        int FOUR = 90;
         float weight = 1.0f;
 
         int valueWhite = 0;

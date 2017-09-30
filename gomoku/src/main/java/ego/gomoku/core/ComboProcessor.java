@@ -37,8 +37,8 @@ public class ComboProcessor {
     }
 
     ComboResult canKill(Color targetColor, int level, long startTime, long limitTime) {
-        if (level % 2 == 1) {
-            level--;
+        if (level % 2 == 0) {
+            level++;
         }
         this.startTime = startTime;
         this.limitTime = limitTime;
@@ -109,7 +109,7 @@ public class ComboProcessor {
             rangePoints = new ArrayList<>(rangeSet);
         }
         //分析选取的点
-        Analyzer data = new Analyzer(gameMap, color, rangePoints, score, false);
+        Analyzer data = new Analyzer(gameMap, color, rangePoints, score, true);
         //如果对面形成活三，则转换会冲四
         if (comboTye == ComboTye.THREE) {
             if (color == targetColor && !data.getThreeDefence().isEmpty()) {
@@ -118,6 +118,9 @@ public class ComboProcessor {
         }
         if (color == targetColor) {
             if (data.getFiveAttack().size() > 0) {
+                if (level == currentLevel) {
+                    result.point = data.getFiveAttack().iterator().next();
+                }
                 return returnValue(true);
             }
             List<Point> points = getComboAttackPoints(data, comboTye);
@@ -207,14 +210,14 @@ public class ComboProcessor {
         GameMap gameMap = new GameMap(colors);
         ConsolePrinter.printMap(gameMap);
         Score score = new Score();
-        Color color = Color.BLACK;
+        Color color = Color.WHITE;
         score.init(gameMap, color);
         long time = System.currentTimeMillis();
         Config config = new Config();
         config.comboDeep = 15;
         ComboProcessor comboProcessor = new ComboProcessor();
         comboProcessor.init(gameMap, score, new Counter(), new Cache(config, gameMap));
-        System.out.println(comboProcessor.canKill(color, 15, System.currentTimeMillis(), config.comboTimeOut).point);
+        System.out.println(comboProcessor.canKill(color, config.comboDeep, System.currentTimeMillis(), config.comboTimeOut).point);
         System.out.println(System.currentTimeMillis() - time + "ms");
     }
 }
