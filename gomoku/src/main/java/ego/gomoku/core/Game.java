@@ -193,7 +193,7 @@ public class Game {
                 break;
             }
             //如果已经用掉不少的时间，则停止
-            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 3) {
+            if (System.currentTimeMillis() - startTime > config.searchTimeOut / 4) {
                 break;
             }
         }
