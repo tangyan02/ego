@@ -10,7 +10,7 @@
 ##### [日志记录](https://github.com/tangyan02/ego/blob/master/gomoku.md)
 ##### [WEB版点击体验](http://tangyancode.cn:8080/game)
 
-##### hips:新的5.0.0版已移植到C++，WEB版的部署为Java不变
+##### tips:新的5.0.0版已移植到C++，WEB版的部署为Java不变
 ##### [C++重制版](https://github.com/tangyan02/ego-gomoku-c)
 
 ## 数独 v1.0
