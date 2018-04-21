@@ -7,4 +7,13 @@ public class Unit {
     public Troop troop;
     public Relation relation;
 
+    @Override
+    public String toString() {
+        return "Unit{" +
+                "x=" + x +
+                ", y=" + y +
+                ", troop=" + troop +
+                ", relation=" + relation +
+                '}';
+    }
 }

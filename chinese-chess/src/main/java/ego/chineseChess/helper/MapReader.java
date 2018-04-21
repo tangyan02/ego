@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MapReader {
 
-    static List<Unit> readUnits(String path) throws IOException {
+    public static List<Unit> readUnits(String path) throws IOException {
         File file = new File(path);
         List<Unit> units = new ArrayList<>();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
