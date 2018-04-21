@@ -1,4 +1,4 @@
-package ego.chinessChess.entity;
+package ego.chineseChess.entity;
 
 public class Unit {
 

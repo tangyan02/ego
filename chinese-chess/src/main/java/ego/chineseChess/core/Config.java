@@ -1,4 +1,4 @@
-package ego.chinessChess.core;
+package ego.chineseChess.core;
 
 public class Config {
 

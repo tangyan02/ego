@@ -1,9 +1,9 @@
-package ego.chinessChess.helper;
+package ego.chineseChess.helper;
 
-import ego.chinessChess.core.Config;
-import ego.chinessChess.entity.Relation;
-import ego.chinessChess.entity.Troop;
-import ego.chinessChess.entity.Unit;
+import ego.chineseChess.core.Config;
+import ego.chineseChess.entity.Relation;
+import ego.chineseChess.entity.Troop;
+import ego.chineseChess.entity.Unit;
 
 import java.io.*;
 import java.util.ArrayList;

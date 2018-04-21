@@ -1,5 +1,5 @@
 rootProject.name = 'ego'
-include 'chiness-chess'
+include 'chinese-chess'
 include 'gomoku'
 include 'sudoku'
 

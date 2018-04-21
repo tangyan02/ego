@@ -1,6 +1,6 @@
-package ego.chinessChess.core;
+package ego.chineseChess.core;
 
-import ego.chinessChess.entity.Unit;
+import ego.chineseChess.entity.Unit;
 
 import java.util.List;
 

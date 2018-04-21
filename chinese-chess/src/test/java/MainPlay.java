@@ -4,7 +4,7 @@ public class MainPlay {
 
     @Test
     public void play(){
-        System.out.println("OK");
+
     }
 
 }
