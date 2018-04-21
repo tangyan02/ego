@@ -1,6 +1,7 @@
 package ego.chineseChess.helper;
 
 import ego.chineseChess.core.Config;
+import ego.chineseChess.core.GameMap;
 import ego.chineseChess.entity.Relation;
 import ego.chineseChess.entity.Troop;
 import ego.chineseChess.entity.Unit;
@@ -9,7 +10,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapReader {
+public class MapDriver {
 
     public static List<Unit> readUnits(String path) throws IOException {
         File file = new File(path);
@@ -26,35 +27,37 @@ public class MapReader {
                 unit.x = i;
                 unit.y = j;
                 unit.relation = Character.isUpperCase(letter) ? Relation.SELF : Relation.OPPONENT;
-                switch (Character.toUpperCase(letter)) {
-                    case 'C':
-                        unit.troop = Troop.CHE;
-                        break;
-                    case 'M':
-                        unit.troop = Troop.MA;
-                        break;
-                    case 'X':
-                        unit.troop = Troop.XIANG;
-                        break;
-                    case 'S':
-                        unit.troop = Troop.SHI;
-                        break;
-                    case 'J':
-                        unit.troop = Troop.JIANG;
-                        break;
-                    case 'P':
-                        unit.troop = Troop.PAO;
-                        break;
-                    case 'B':
-                        unit.troop = Troop.BING;
-                        break;
-                    default:
-                        throw new IllegalArgumentException("troops not support");
+                for (Troop troop : Troop.values()) {
+                    if (troop.getLetter() == Character.toLowerCase(letter)) {
+                        unit.troop = troop;
+                    }
+                }
+                if (unit.troop == null) {
+                    throw new IllegalArgumentException("troop not support");
                 }
                 units.add(unit);
             }
         }
         return units;
+    }
+
+    public static void printToConsole(GameMap gameMap) {
+        for (int i = 0; i < Config.HEIGHT; i++) {
+            for (int j = 0; j < Config.WIDTH; j++) {
+                Unit unit = gameMap.getUnit(i, j);
+                if (unit == null) {
+                    System.out.print('.');
+                    continue;
+                }
+                char letter = unit.troop.getLetter();
+                if (unit.relation == Relation.SELF) {
+                    letter = Character.toUpperCase(letter);
+                }
+                System.out.print(letter);
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
 }

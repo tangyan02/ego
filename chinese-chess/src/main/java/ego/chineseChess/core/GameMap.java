@@ -1,12 +1,9 @@
 package ego.chineseChess.core;
 
-import ego.chineseChess.entity.Point;
 import ego.chineseChess.entity.Unit;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GameMap {
 
@@ -23,13 +20,26 @@ public class GameMap {
         if (map[x][y] != null) {
             units.remove(map[x][y]);
         }
+        map[unit.x][unit.y] = null;
+        map[x][y] = unit;
+        unit.x = x;
+        unit.y = y;
+    }
+
+    public void undoMove(Unit unit, int x, int y, Unit last) {
+        if (last != null) {
+            map[last.x][last.y] = last;
+            units.add(last);
+        } else {
+            map[unit.x][unit.y] = null;
+        }
         map[x][y] = unit;
         unit.x = x;
         unit.y = y;
     }
 
     public HashSet<Unit> getUnits() {
-        return units;
+        return new HashSet<>(units);
     }
 
     public Unit getUnit(int x, int y) {
@@ -46,6 +56,14 @@ public class GameMap {
                 return false;
             }
         }
+        return true;
+    }
+
+    public boolean inMap(int x, int y) {
+        if (x < 0 || x >= Config.HEIGHT)
+            return false;
+        if (y < 0 || y >= Config.WIDTH)
+            return false;
         return true;
     }
 }

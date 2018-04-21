@@ -90,6 +90,42 @@ public class MoveRuler {
                 points.add(new Point(x, y));
             }
         }
+        if (unit.troop == Troop.PAO) {
+            for (int direct = 0; direct < 4; direct++) {
+                int x = unit.x;
+                int y = unit.y;
+                while (true) {
+                    x += dx[direct];
+                    y += dy[direct];
+                    if (!gameMap.inMap(x, y)) {
+                        break;
+                    }
+                    if (gameMap.getUnit(x, y) != null) {
+                        while (true) {
+                            x += dx[direct];
+                            y += dy[direct];
+                            if (!gameMap.inMap(x, y)) {
+                                break;
+                            }
+                            if (gameMap.getUnit(x, y) != null) {
+                                if (gameMap.getUnit(x, y).relation == Relation.OPPONENT) {
+                                    points.add(new Point(x, y));
+                                }
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        if (unit.troop == Troop.BING) {
+            int x = unit.relation == Relation.SELF ? unit.x - 1 : unit.x + 1;
+            int y = unit.y;
+            if (gameMap.movable(unit, x, y)) {
+                points.add(new Point(x, y));
+            }
+        }
         return points;
     }
 

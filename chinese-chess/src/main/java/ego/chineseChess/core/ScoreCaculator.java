@@ -18,6 +18,7 @@ public class ScoreCaculator {
                 sum -= unit.troop.getValue();
             }
         }
+
         return sum;
     }
 

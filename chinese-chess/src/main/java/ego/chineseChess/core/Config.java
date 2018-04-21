@@ -6,4 +6,6 @@ public class Config {
 
     public final static int HEIGHT = 10;
 
+    public static int level = 4;
+
 }
