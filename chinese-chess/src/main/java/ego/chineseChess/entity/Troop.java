@@ -6,9 +6,9 @@ public enum Troop {
     MA(500, 'm'),
     XIANG(300, 'x'),
     SHI(300, 's'),
-    JIANG(10000, 'j'),
+    JIANG(100000, 'j'),
     PAO(500, 'p'),
-    BING(1000, 'b');
+    BING(100, 'b');
 
     private int value;
 

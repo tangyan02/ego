@@ -5,9 +5,9 @@ import ego.chineseChess.entity.Unit;
 
 import java.util.HashSet;
 
-public class ScoreCaculator {
+public class ScoreCalculator {
 
-    public static int getScore(GameMap gameMap) {
+    public static int getScore(GameMap gameMap, Relation relation) {
         int sum = 0;
         HashSet<Unit> units = gameMap.getUnits();
         for (Unit unit : units) {
@@ -18,7 +18,9 @@ public class ScoreCaculator {
                 sum -= unit.troop.getValue();
             }
         }
-
+        if (relation == Relation.OPPONENT) {
+            sum = -sum;
+        }
         return sum;
     }
 

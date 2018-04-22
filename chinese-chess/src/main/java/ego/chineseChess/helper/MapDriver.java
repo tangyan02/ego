@@ -41,6 +41,27 @@ public class MapDriver {
         return units;
     }
 
+    public static void writeUnits(String path, GameMap gameMap) throws IOException {
+        File file = new File(path);
+        FileWriter fileWriter = new FileWriter(file);
+        for (int i = 0; i < Config.HEIGHT; i++) {
+            for (int j = 0; j < Config.WIDTH; j++) {
+                Unit unit = gameMap.getUnit(i, j);
+                if (unit == null) {
+                    fileWriter.write('.');
+                    continue;
+                }
+                char letter = unit.troop.getLetter();
+                if (unit.relation == Relation.SELF) {
+                    letter = Character.toUpperCase(letter);
+                }
+                fileWriter.write(letter);
+            }
+            fileWriter.write("\n");
+        }
+        fileWriter.close();
+    }
+
     public static void printToConsole(GameMap gameMap) {
         for (int i = 0; i < Config.HEIGHT; i++) {
             for (int j = 0; j < Config.WIDTH; j++) {

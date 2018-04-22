@@ -17,6 +17,13 @@ public class Move {
         this.value = value;
     }
 
+    public void set(Unit unit, int x, int y, int value) {
+        this.unit = unit;
+        this.x = x;
+        this.y = y;
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         return "Move{" +

@@ -1,5 +1,6 @@
 import ego.chineseChess.core.ChessGame;
-import ego.chineseChess.entity.Move;
+import ego.chineseChess.core.GameMap;
+import ego.chineseChess.entity.PlayResult;
 import ego.chineseChess.entity.Relation;
 import ego.chineseChess.entity.Unit;
 import ego.chineseChess.helper.MapDriver;
@@ -10,17 +11,26 @@ import java.util.List;
 
 public class MainPlay {
 
+    boolean update = false;
+
+
     @Test
-    public void play() {
+    public void play() throws IOException {
+        String path = "src/test/resources/input.txt";
         List<Unit> units = null;
         try {
-            units = MapDriver.readUnits("src/test/resources/input.txt");
+            units = MapDriver.readUnits(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
         ChessGame chessGame = new ChessGame(units);
-        Move move = chessGame.play(Relation.SELF);
-        System.out.println(move);
+        PlayResult result = chessGame.play(Relation.SELF);
+        if (update) {
+            GameMap gameMap = new GameMap(units);
+            gameMap.move(result.move.unit, result.move.x, result.move.y);
+            MapDriver.writeUnits(path, gameMap);
+        }
+        System.out.println(result);
     }
 
 }

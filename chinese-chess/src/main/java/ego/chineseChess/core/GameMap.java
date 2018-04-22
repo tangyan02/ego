@@ -27,11 +27,9 @@ public class GameMap {
     }
 
     public void undoMove(Unit unit, int x, int y, Unit last) {
+        map[unit.x][unit.y] = last;
         if (last != null) {
-            map[last.x][last.y] = last;
             units.add(last);
-        } else {
-            map[unit.x][unit.y] = null;
         }
         map[x][y] = unit;
         unit.x = x;
@@ -46,11 +44,32 @@ public class GameMap {
         return map[x][y];
     }
 
-    public boolean movable(Unit unit, int x, int y) {
-        if (x < 0 || x >= Config.HEIGHT)
+    public boolean moveAble(int x, int y) {
+        if (!inMap(x, y)) {
             return false;
-        if (y < 0 || y >= Config.WIDTH)
+        }
+        if (map[x][y] != null) {
             return false;
+        }
+        return true;
+    }
+
+    public boolean attackAble(Unit unit, int x, int y) {
+        if (!inMap(x, y)) {
+            return false;
+        }
+        if (map[x][y] != null) {
+            if (map[x][y].relation != unit.relation) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean moveOrAttackAble(Unit unit, int x, int y) {
+        if (!inMap(x, y)) {
+            return false;
+        }
         if (map[x][y] != null) {
             if (map[x][y].relation == unit.relation) {
                 return false;

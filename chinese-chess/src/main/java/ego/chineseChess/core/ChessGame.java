@@ -1,10 +1,6 @@
 package ego.chineseChess.core;
 
-import ego.chineseChess.entity.Move;
-import ego.chineseChess.entity.Point;
-import ego.chineseChess.entity.Relation;
-import ego.chineseChess.entity.Unit;
-import ego.chineseChess.helper.MapDriver;
+import ego.chineseChess.entity.*;
 
 import java.util.List;
 
@@ -12,23 +8,31 @@ public class ChessGame {
 
     private GameMap gameMap;
 
+    private int count = 0;
+
     public ChessGame(List<Unit> units) {
         gameMap = new GameMap(units);
     }
 
-    public Move play(Relation relation) {
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
-        return dfs(Config.level, relation, alpha, beta, null, null, null);
+    public PlayResult play(Relation relation) {
+        count = 0;
+        int alpha = Integer.MIN_VALUE / 2;
+        int beta = Integer.MAX_VALUE / 2;
+        Move move = dfs(Config.level, relation, alpha, beta, null, null, null, false);
+        return new PlayResult(move, count);
     }
 
-    private Move dfs(int level, Relation relation, int alpha, int beta, Unit currentUnit, Integer currentX, Integer currentY) {
-        if (level == 0) {
-            int value = ScoreCaculator.getScore(gameMap);
-            MapDriver.printToConsole(gameMap);
+    private Move dfs(int level, Relation relation, int alpha, int beta, Unit currentUnit, Integer currentX, Integer currentY, boolean check) {
+        count++;
+        if (level == 0 || check) {
+            int value = ScoreCalculator.getScore(gameMap, relation);
+//            MapDriver.printToConsole(gameMap);
+//            System.out.println(value);
+//            System.out.println();
             return new Move(currentUnit, currentX, currentY, value);
         }
-        Move move = null;
+        Move move = new Move();
+        int currentMax = Integer.MIN_VALUE;
         for (Unit unit : gameMap.getUnits()) {
             if (unit.relation != relation)
                 continue;
@@ -39,19 +43,22 @@ public class ChessGame {
                 int toX = point.x;
                 int toY = point.y;
                 Unit targetUnit = gameMap.getUnit(toX, toY);
-                gameMap.move(unit, toX, toY);
-                Move result = dfs(level - 1, relation.getOther(), -beta, -alpha, targetUnit, toX, toY);
-                gameMap.undoMove(unit, fromX, fromY, targetUnit);
-                if (result == null) {
-                    System.out.println("result is null");
-                    continue;
+                if (targetUnit != null && targetUnit.troop == Troop.JIANG) {
+                    check = true;
                 }
+                gameMap.move(unit, toX, toY);
+                Move result = dfs(level - 1, relation.getOther(), -beta, -alpha, targetUnit, toX, toY, check);
+                gameMap.undoMove(unit, fromX, fromY, targetUnit);
+                check = false;
                 int value = -result.value;
-                if (value > alpha) {
-                    alpha = value;
-                    move = new Move(unit, toX, toY, value);
-                    if (value > beta) {
-                        return move;
+                if (value > currentMax) {
+                    currentMax = value;
+                    move.set(unit, toX, toY, value);
+                    if (value > alpha) {
+                        alpha = value;
+                        if (value > beta) {
+                            return move;
+                        }
                     }
                 }
             }
