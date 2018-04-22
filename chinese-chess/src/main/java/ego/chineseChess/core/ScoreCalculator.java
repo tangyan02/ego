@@ -1,9 +1,11 @@
 package ego.chineseChess.core;
 
+import ego.chineseChess.entity.Point;
 import ego.chineseChess.entity.Relation;
 import ego.chineseChess.entity.Unit;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class ScoreCalculator {
 
@@ -18,6 +20,17 @@ public class ScoreCalculator {
                 sum -= unit.troop.getValue();
             }
         }
+        int attackScore = 0;
+        for (Unit unit : units) {
+            List<Point> points = MoveRuler.getMovePoint(gameMap, unit);
+            for (Point point : points) {
+                Unit target = gameMap.getUnit(point.x, point.y);
+                if (target != null) {
+                    attackScore += target.troop.getValue() / 3;
+                }
+            }
+        }
+        sum += attackScore;
         if (relation == Relation.OPPONENT) {
             sum = -sum;
         }

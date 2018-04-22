@@ -37,7 +37,7 @@ public class MoveRuler {
                 while (true) {
                     x += dx[direct];
                     y += dy[direct];
-                    if (!gameMap.moveOrAttackAble(unit, x, y)) {
+                    if (!gameMap.moveOrAttackAble(x, y)) {
                         break;
                     }
                     points.add(new Point(x, y));
@@ -51,7 +51,7 @@ public class MoveRuler {
             for (int i = 0; i < 8; i++) {
                 int x = unit.x + dxMa[i];
                 int y = unit.y + dyMa[i];
-                if (!gameMap.moveOrAttackAble(unit, x, y)) {
+                if (!gameMap.moveOrAttackAble(x, y)) {
                     continue;
                 }
                 int barrierX = unit.x + dxMaBarrier[i];
@@ -66,7 +66,7 @@ public class MoveRuler {
             for (int i = 0; i < 4; i++) {
                 int x = unit.x + dxXiang[i];
                 int y = unit.y + dyXiang[i];
-                if (!gameMap.moveOrAttackAble(unit, x, y)) {
+                if (!gameMap.moveOrAttackAble(x, y)) {
                     continue;
                 }
                 if (!inSide(x, unit.relation)) {
@@ -84,7 +84,7 @@ public class MoveRuler {
             for (int i = 0; i < 4; i++) {
                 int x = unit.x + dxShi[i];
                 int y = unit.y + dyShi[i];
-                if (!gameMap.moveOrAttackAble(unit, x, y)) {
+                if (!gameMap.moveOrAttackAble(x, y)) {
                     continue;
                 }
                 if (!inBase(x, y, unit.relation)) {
@@ -97,7 +97,7 @@ public class MoveRuler {
             for (int i = 0; i < 4; i++) {
                 int x = unit.x + dx[i];
                 int y = unit.y + dy[i];
-                if (!gameMap.moveOrAttackAble(unit, x, y)) {
+                if (!gameMap.moveOrAttackAble(x, y)) {
                     continue;
                 }
                 if (!inBase(x, y, unit.relation)) {
@@ -140,7 +140,7 @@ public class MoveRuler {
                                 break;
                             }
                             if (gameMap.getUnit(x, y) != null) {
-                                if (gameMap.attackAble(unit, x, y)) {
+                                if (gameMap.attackAble(x, y)) {
                                     points.add(new Point(x, y));
                                 }
                                 break;
@@ -157,14 +157,14 @@ public class MoveRuler {
         if (unit.troop == Troop.BING) {
             int x = unit.relation == Relation.SELF ? unit.x - 1 : unit.x + 1;
             int y = unit.y;
-            if (gameMap.moveOrAttackAble(unit, x, y)) {
+            if (gameMap.moveOrAttackAble(x, y)) {
                 points.add(new Point(x, y));
             }
             if (!inSide(unit.x, unit.relation)) {
-                if (gameMap.moveOrAttackAble(unit, x, y - 1)) {
+                if (gameMap.moveOrAttackAble(x, y - 1)) {
                     points.add(new Point(x, y - 1));
                 }
-                if (gameMap.moveOrAttackAble(unit, x, y + 1)) {
+                if (gameMap.moveOrAttackAble(x, y + 1)) {
                     points.add(new Point(x, y + 1));
                 }
             }

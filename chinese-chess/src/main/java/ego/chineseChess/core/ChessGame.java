@@ -8,6 +8,8 @@ public class ChessGame {
 
     private GameMap gameMap;
 
+    private ScoreCache scoreCache = new ScoreCache();
+
     private int count = 0;
 
     public ChessGame(List<Unit> units) {
@@ -24,11 +26,13 @@ public class ChessGame {
 
     private Move dfs(int level, Relation relation, int alpha, int beta, Unit currentUnit, Integer currentX, Integer currentY, boolean check) {
         count++;
+        //缓存检查
+//        Move cacheValue = scoreCache.get(gameMap, level, alpha, beta);
+//        if (cacheValue != null) {
+//            return cacheValue;
+//        }
         if (level == 0 || check) {
             int value = ScoreCalculator.getScore(gameMap, relation);
-//            MapDriver.printToConsole(gameMap);
-//            System.out.println(value);
-//            System.out.println();
             return new Move(currentUnit, currentX, currentY, value);
         }
         Move move = new Move();
@@ -43,6 +47,13 @@ public class ChessGame {
                 int toX = point.x;
                 int toY = point.y;
                 Unit targetUnit = gameMap.getUnit(toX, toY);
+                //己方单位不攻击
+                if (targetUnit != null) {
+                    if(targetUnit.relation == unit.relation){
+                        continue;
+                    }
+                }
+                //将军判断
                 if (targetUnit != null && targetUnit.troop == Troop.JIANG) {
                     check = true;
                 }
@@ -57,12 +68,14 @@ public class ChessGame {
                     if (value > alpha) {
                         alpha = value;
                         if (value > beta) {
+                            //scoreCache.record(gameMap, level, alpha, beta, move);
                             return move;
                         }
                     }
                 }
             }
         }
+        //scoreCache.record(gameMap, level, alpha, beta, move);
         return move;
     }
 
