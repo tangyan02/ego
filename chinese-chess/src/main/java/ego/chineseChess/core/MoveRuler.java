@@ -1,9 +1,6 @@
 package ego.chineseChess.core;
 
-import ego.chineseChess.entity.Point;
-import ego.chineseChess.entity.Relation;
-import ego.chineseChess.entity.Troop;
-import ego.chineseChess.entity.Unit;
+import ego.chineseChess.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +24,20 @@ public class MoveRuler {
 
     private final static int[] dxShi = {1, 1, -1, -1};
     private final static int[] dyShi = {-1, 1, 1, -1};
+
+    public static List<MoveStep> getMoves(GameMap gameMap, Relation relation) {
+        List<MoveStep> moves = new ArrayList<>();
+        for (Unit unit : gameMap.getUnits()) {
+            if (unit.relation != relation)
+                continue;
+            List<Point> points = getMovePoint(gameMap, unit);
+            for (Point point : points) {
+                MoveStep move = new MoveStep(unit, point.x, point.y, 0);
+                moves.add(move);
+            }
+        }
+        return moves;
+    }
 
     public static List<Point> getMovePoint(GameMap gameMap, Unit unit) {
         List<Point> points = new ArrayList<>();

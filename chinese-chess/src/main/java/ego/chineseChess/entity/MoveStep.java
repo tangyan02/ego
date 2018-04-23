@@ -1,19 +1,22 @@
 package ego.chineseChess.entity;
 
-public class Move {
+/**
+ * 某一步骤的决策
+ */
+public class MoveStep {
 
     public Unit unit;
     public int x;
     public int y;
     /**
-     * 局面评分
+     * 步骤评分
      */
     public int value;
 
-    public Move() {
+    public MoveStep() {
     }
 
-    public Move(Unit unit, int x, int y, int value) {
+    public MoveStep(Unit unit, int x, int y, int value) {
         this.unit = unit;
         this.x = x;
         this.y = y;
@@ -29,11 +32,13 @@ public class Move {
 
     @Override
     public String toString() {
-        return "Move{" +
+        return "MoveStep{" +
                 "unit=" + unit +
                 ", x=" + x +
                 ", y=" + y +
                 ", value=" + value +
                 '}';
     }
+
+
 }
