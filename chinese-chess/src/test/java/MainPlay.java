@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MainPlay {
 
-    boolean update = false;
+    boolean update = true;
 
 
     @Test
@@ -25,12 +25,12 @@ public class MainPlay {
         }
         ChessGame chessGame = new ChessGame(units);
         PlayResult result = chessGame.play(Relation.SELF);
+        System.out.println(result);
         if (update) {
             GameMap gameMap = new GameMap(units);
             gameMap.move(result.move.unit, result.move.x, result.move.y);
             MapDriver.writeUnits(path, gameMap);
         }
-        System.out.println(result);
     }
 
 }

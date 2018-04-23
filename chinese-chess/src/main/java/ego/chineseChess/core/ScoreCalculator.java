@@ -2,6 +2,7 @@ package ego.chineseChess.core;
 
 import ego.chineseChess.entity.Point;
 import ego.chineseChess.entity.Relation;
+import ego.chineseChess.entity.Troop;
 import ego.chineseChess.entity.Unit;
 
 import java.util.HashSet;
@@ -26,7 +27,10 @@ public class ScoreCalculator {
             for (Point point : points) {
                 Unit target = gameMap.getUnit(point.x, point.y);
                 if (target != null) {
-                    attackScore += target.troop.getValue() / 3;
+                    if (target.troop == Troop.JIANG) {
+                        continue;
+                    }
+                    attackScore += target.troop.getValue() / 100;
                 }
             }
         }

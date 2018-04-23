@@ -72,9 +72,6 @@ public class GameMap {
         if (!inMap(x, y)) {
             return false;
         }
-        if (map[x][y] != null) {
-            return false;
-        }
         return true;
     }
 
