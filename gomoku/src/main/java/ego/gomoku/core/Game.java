@@ -54,7 +54,7 @@ public class Game {
 
         //判断是否随机开局
         if (randomBegin) {
-            Point point = BeginningProcessor.getBeginningRandomPoint(gameMap.getMap());
+            Point point = BeginningProcessor.getBeginningRandomPoint(gameMap.getMap(), color);
             if (point != null) {
                 result.add(point, 0);
                 return result;
