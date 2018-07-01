@@ -119,6 +119,9 @@ public class BeginningProcessor {
                         }
                     }
                 }
+            if (resultList.isEmpty()) {
+                return null;
+            }
             return resultList.get(new Random().nextInt(resultList.size()));
         }
         return null;
