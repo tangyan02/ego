@@ -97,7 +97,6 @@ public class BeginningProcessor {
         }
         if (aiColor == Color.WHITE) {
             int count = 0;
-            int mid = Config.size / 2;
             Point blackPoint = null;
             for (int i = 0; i < Config.size; i++)
                 for (int j = 0; j < Config.size; j++) {
@@ -111,8 +110,8 @@ public class BeginningProcessor {
                 return null;
             }
             List<Point> resultList = new ArrayList<>();
-            for (int i = blackPoint.getX() - 1; i <= blackPoint.getY() + 1; i++)
-                for (int j = blackPoint.getX() - 1; j <= blackPoint.getY() + 1; j++) {
+            for (int i = blackPoint.getX() - 1; i <= blackPoint.getX() + 1; i++)
+                for (int j = blackPoint.getY() - 1; j <= blackPoint.getY() + 1; j++) {
                     if (GameMap.reachable(i, j)) {
                         if (map[i][j] == Color.NULL) {
                             resultList.add(new Point(i, j));
