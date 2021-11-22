@@ -7,11 +7,9 @@
 - 黑棋先手击败 YiXin13(30s)
 - 支持Gomocup的Piskvork协议
 
-##### [WEB版点击体验](http://tangyancode.cn:8080/game)
-
-##### tips:新版已移植到C++，WEB版的部署为Java不变
+##### tips:新版已移植到C++
 ##### [C++重制版](https://github.com/tangyan02/ego-gomoku-c)
-
+##### [WEB版点击体验](http://tangyancode.cn:8080/game)
 
 ## 对战记录
 
